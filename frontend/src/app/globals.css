@@ -3,33 +3,34 @@
 @tailwind utilities;
 
 :root {
-  --primary: 22 101 52;
-  --primary-hover: 20 83 45;
+  color-scheme: dark;
+  --primary: 16 185 129;
+  --primary-hover: 52 211 153;
   --primary-strong: 6 78 59;
-  --primary-soft: 236 253 245;
-  --primary-softer: 244 253 248;
-  --bg: 248 251 248;
-  --surface: 255 255 255;
-  --line: 227 234 227;
-  --line-strong: 209 221 210;
-  --ink: 7 33 21;
-  --ink-soft: 50 79 60;
-  --ink-muted: 112 137 120;
-  --success: 5 150 105;
-  --warning: 217 119 6;
-  --danger: 220 38 38;
-  --chart-forest: 22 101 52;
-  --chart-pine: 21 128 61;
-  --chart-teal: 13 148 136;
-  --chart-emerald: 5 150 105;
-  --chart-gold: 217 119 6;
-  --chart-rose: 225 29 72;
-  --chart-slate: 148 163 184;
+  --primary-soft: 21 43 35;
+  --primary-softer: 13 31 25;
+  --bg: 9 12 11;
+  --surface: 16 21 19;
+  --surface-2: 22 28 25;
+  --line: 38 47 43;
+  --line-strong: 56 67 61;
+  --ink: 235 243 238;
+  --ink-soft: 163 180 171;
+  --ink-muted: 106 124 114;
+  --success: 16 185 129;
+  --warning: 245 158 11;
+  --danger: 248 113 113;
+  --chart-forest: 16 185 129;
+  --chart-pine: 45 212 191;
+  --chart-teal: 163 230 53;
+  --chart-emerald: 52 211 153;
+  --chart-gold: 251 191 36;
+  --chart-rose: 251 113 133;
+  --chart-slate: 100 116 139;
   --shadow-card:
-    0 1px 2px rgba(7, 33, 21, 0.04), 0 1px 3px rgba(7, 33, 21, 0.05),
-    0 16px 40px -24px rgba(7, 33, 21, 0.18);
+    0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
   --shadow-pop:
-    0 12px 32px -12px rgba(7, 33, 21, 0.25), 0 2px 8px rgba(7, 33, 21, 0.08);
+    0 16px 40px -12px rgba(0, 0, 0, 0.65), 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 * {
@@ -48,7 +49,7 @@ body {
 }
 
 ::selection {
-  background: rgba(22, 101, 52, 0.18);
+  background: rgba(16, 185, 129, 0.35);
 }
 
 .tabular {
@@ -61,7 +62,7 @@ body {
     box-shadow: var(--shadow-card);
   }
   .input-field {
-    @apply w-full rounded-xl border border-line-strong bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-ink-muted focus:border-primary focus:ring-2 focus:ring-primary/20;
+    @apply w-full rounded-xl border border-line-strong bg-white/5 px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-ink-muted focus:border-primary focus:ring-2 focus:ring-primary/25;
   }
   .section-kicker {
     @apply text-xs font-semibold uppercase tracking-[0.18em] text-primary;
@@ -76,12 +77,12 @@ body {
 
 @layer utilities {
   .bg-grid {
-    background-image: linear-gradient(to right, rgba(22, 101, 52, 0.07) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(22, 101, 52, 0.07) 1px, transparent 1px);
+    background-image: linear-gradient(to right, rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
     background-size: 44px 44px;
   }
   .text-gradient {
-    background: linear-gradient(100deg, rgb(var(--primary)) 0%, #15803d 55%, #0f766e 100%);
+    background: linear-gradient(100deg, #34d399 0%, #10b981 50%, #2dd4bf 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -100,6 +101,11 @@ body {
     padding: 0 !important;
   }
   body {
-    background: #fff;
+    background: #fff !important;
+    color: #0f172a !important;
+  }
+  .card {
+    border-color: #e2e8f0 !important;
+    box-shadow: none !important;
   }
 }

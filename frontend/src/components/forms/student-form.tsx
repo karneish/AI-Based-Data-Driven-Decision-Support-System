@@ -195,7 +195,7 @@ export function StudentForm({
               key={preset.name}
               type="button"
               onClick={() => applyPreset(preset)}
-              className="rounded-xl border border-line bg-white px-2 py-2 text-left transition hover:border-primary/50"
+              className="rounded-xl border border-line bg-white/[0.04] px-2 py-2 text-left transition hover:border-emerald-500/40 hover:bg-white/[0.06]"
             >
               <span className="flex items-center gap-1 text-xs font-semibold text-ink">
                 <Sparkles className="h-3 w-3 text-primary" />
@@ -299,7 +299,7 @@ export function StudentForm({
       </div>
 
       {error ? (
-        <div className="rounded-xl bg-rose-50 px-3.5 py-3 text-sm text-rose-600 ring-1 ring-rose-200">
+        <div className="rounded-xl bg-rose-500/10 px-3.5 py-3 text-sm text-rose-300 ring-1 ring-rose-500/30">
           {error}
         </div>
       ) : null}

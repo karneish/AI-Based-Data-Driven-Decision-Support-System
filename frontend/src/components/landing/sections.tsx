@@ -39,11 +39,11 @@ export function LiveInsights() {
   return (
     <section
       id="insights"
-      className="relative overflow-hidden border-y border-line bg-primary-soft/40 py-20 lg:py-24"
+      className="relative overflow-hidden border-y border-line/60 py-20 lg:py-24"
     >
       <div className="absolute inset-0 bg-grid opacity-40" />
-      <div className="absolute -left-40 top-0 h-96 w-96 rounded-full bg-primary/10 blur-[130px]" />
-      <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-teal-300/25 blur-[130px]" />
+      <div className="absolute left-1/2 top-0 h-80 w-[60rem] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-[140px]" />
+      <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-teal-500/10 blur-[130px]" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-2">
@@ -68,9 +68,9 @@ export function LiveInsights() {
             </div>
           </div>
 
-          <Card className="p-6">
+          <Card className="border-emerald-500/20 bg-white/[0.03] p-6 backdrop-blur">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-300">
                 <Trophy className="h-5 w-5" />
               </div>
               <div>
@@ -95,7 +95,7 @@ export function LiveInsights() {
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-xl border border-line bg-surface px-4 py-3"
+                  className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3"
                 >
                   <p className="text-xs text-ink-muted">{stat.label}</p>
                   {stat.value ? (
@@ -109,7 +109,7 @@ export function LiveInsights() {
               ))}
             </div>
 
-            <div className="mt-6 flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700 ring-1 ring-inset ring-emerald-200">
+            <div className="mt-6 flex items-center gap-2 rounded-xl bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300 ring-1 ring-inset ring-emerald-500/25">
               <Activity className="h-4 w-4" />
               <span>Backend online · predictions generated on request</span>
             </div>
@@ -231,7 +231,7 @@ export function FeaturesSection() {
             key={feature.title}
             className="group p-6 transition hover:-translate-y-0.5 hover:shadow-pop"
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-soft text-primary transition group-hover:bg-primary group-hover:text-white">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-300 transition group-hover:bg-emerald-500 group-hover:text-emerald-950">
               {ICON_MAP[feature.icon]}
             </div>
             <h3 className="mt-4 text-base font-semibold text-ink">{feature.title}</h3>
@@ -263,7 +263,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-primary-soft/30 py-20 lg:py-24">
+    <section id="how-it-works" className="bg-white/[0.02] py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <span className="section-kicker">How it works</span>
@@ -279,7 +279,7 @@ export function HowItWorks() {
             <div key={item.step} className="relative">
               <Card className="h-full p-6">
                 <div className="flex items-center justify-between">
-                  <span className="tabular text-3xl font-bold text-primary/20">
+                  <span className="tabular text-3xl font-bold text-primary/30">
                     {item.step}
                   </span>
                   {i < STEPS.length - 1 ? (
@@ -351,20 +351,20 @@ export function CtaBanner() {
   return (
     <section className="px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24">
       <div className="mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary-hover to-emerald-700 px-6 py-14 text-center shadow-pop sm:px-12">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 via-emerald-400 to-teal-400 px-6 py-14 text-center shadow-pop sm:px-12">
           <div className="absolute inset-0 bg-grid opacity-30" />
-          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
+          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/20 blur-2xl" />
           <div className="relative">
-            <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight text-emerald-950 md:text-4xl">
               Ready to see what the data says?
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-base text-emerald-50">
+            <p className="mx-auto mt-4 max-w-xl text-base text-emerald-900/80">
               Sign in with a demo account and run a full analysis in under a
               minute — free forever.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link href="/login">
-                <Button size="lg" className="bg-white text-primary shadow-none hover:bg-emerald-50">
+                <Button size="lg" className="bg-emerald-950 text-emerald-50 shadow-none hover:bg-[#052e1f]">
                   Get started free
                 </Button>
               </Link>

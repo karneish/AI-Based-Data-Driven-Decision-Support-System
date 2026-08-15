@@ -19,11 +19,11 @@ export interface ButtonProps
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-primary text-white hover:bg-primary-hover shadow-sm shadow-primary/30 focus-visible:ring-primary/40",
+    "bg-primary text-emerald-950 hover:bg-primary-hover shadow-[0_8px_20px_-8px_rgba(16,185,129,0.55)] focus-visible:ring-primary/40",
   secondary:
-    "bg-white text-ink border border-line-strong hover:border-primary/50 hover:text-primary focus-visible:ring-primary/30",
-  ghost: "text-ink-soft hover:bg-slate-100 hover:text-ink",
-  danger: "bg-rose-50 text-rose-600 ring-1 ring-rose-200 hover:bg-rose-100",
+    "bg-surface text-ink border border-line-strong hover:border-primary/60 hover:text-primary focus-visible:ring-primary/30",
+  ghost: "text-ink-soft hover:bg-white/[0.06] hover:text-ink",
+  danger: "bg-rose-500/10 text-rose-400 ring-1 ring-rose-500/30 hover:bg-rose-500/20",
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -121,13 +121,13 @@ export interface BadgeProps
 }
 
 const badgeTones: Record<NonNullable<BadgeProps["tone"]>, string> = {
-  neutral: "bg-slate-100 text-slate-600 ring-slate-200",
-  primary: "bg-primary-soft text-primary ring-primary/20",
-  green: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  amber: "bg-amber-50 text-amber-700 ring-amber-200",
-  red: "bg-rose-50 text-rose-700 ring-rose-200",
-  cyan: "bg-cyan-50 text-cyan-700 ring-cyan-200",
-  teal: "bg-teal-50 text-teal-700 ring-teal-200",
+  neutral: "bg-white/5 text-slate-300 ring-white/10",
+  primary: "bg-emerald-500/10 text-emerald-300 ring-emerald-500/30",
+  green: "bg-emerald-500/10 text-emerald-300 ring-emerald-500/30",
+  amber: "bg-amber-500/10 text-amber-300 ring-amber-500/30",
+  red: "bg-rose-500/10 text-rose-300 ring-rose-500/30",
+  cyan: "bg-cyan-500/10 text-cyan-300 ring-cyan-500/30",
+  teal: "bg-teal-500/10 text-teal-300 ring-teal-500/30",
 }
 
 export function Badge({
@@ -225,10 +225,10 @@ export function RangeField({
   const pct = ((value - min) / (max - min)) * 100
   const accent =
     tone === "primary"
-      ? "accent-[#166534]"
+      ? "accent-[#10b981]"
       : tone === "emerald"
-        ? "accent-[#059669]"
-        : "accent-[#d97706]"
+        ? "accent-[#34d399]"
+        : "accent-[#fbbf24]"
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
@@ -238,7 +238,7 @@ export function RangeField({
             <span className="ml-1.5 text-xs font-normal text-ink-muted">{hint}</span>
           ) : null}
         </span>
-        <span className="tabular rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-ink-soft">
+        <span className="tabular rounded-md bg-white/5 px-2 py-0.5 text-xs font-semibold text-ink-soft">
           {display}
         </span>
       </div>
@@ -250,13 +250,13 @@ export function RangeField({
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         className={cn(
-          "h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200",
+          "h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10",
           accent
         )}
         style={{
           background: `linear-gradient(to right, ${
-            tone === "primary" ? "#166534" : tone === "emerald" ? "#059669" : "#d97706"
-          } ${pct}%, #e2e8f0 ${pct}%)`,
+            tone === "primary" ? "#10b981" : tone === "emerald" ? "#34d399" : "#fbbf24"
+          } ${pct}%, rgba(255,255,255,0.12) ${pct}%)`,
         }}
       />
     </div>
@@ -306,7 +306,7 @@ export function Switch({
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className="flex w-full items-center justify-between gap-4 rounded-xl border border-line bg-white px-3.5 py-3 text-left transition hover:border-line-strong"
+      className="flex w-full items-center justify-between gap-4 rounded-xl border border-line bg-white/[0.04] px-3.5 py-3 text-left transition hover:border-line-strong"
     >
       <span>
         <span className="block text-sm font-medium text-ink">{label}</span>
@@ -317,7 +317,7 @@ export function Switch({
       <span
         className={cn(
           "relative h-6 w-11 shrink-0 rounded-full transition-colors",
-          checked ? "bg-primary" : "bg-slate-300"
+          checked ? "bg-primary" : "bg-white/15"
         )}
       >
         <span
@@ -345,12 +345,12 @@ export function StatCard({
   tone?: "primary" | "green" | "amber" | "red" | "cyan" | "teal"
 }) {
   const tones: Record<string, string> = {
-    primary: "bg-primary-soft text-primary",
-    green: "bg-emerald-50 text-emerald-600",
-    amber: "bg-amber-50 text-amber-600",
-    red: "bg-rose-50 text-rose-600",
-    cyan: "bg-cyan-50 text-cyan-600",
-    teal: "bg-teal-50 text-teal-600",
+    primary: "bg-emerald-500/15 text-emerald-300",
+    green: "bg-emerald-500/15 text-emerald-300",
+    amber: "bg-amber-500/15 text-amber-300",
+    red: "bg-rose-500/15 text-rose-300",
+    cyan: "bg-cyan-500/15 text-cyan-300",
+    teal: "bg-teal-500/15 text-teal-300",
   }
   return (
     <Card className="p-4">
@@ -384,7 +384,7 @@ export function EmptyState({
   return (
     <div className="flex flex-col items-center justify-center px-6 py-20 text-center">
       {icon ? (
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-300">
           {icon}
         </div>
       ) : null}
@@ -397,8 +397,8 @@ export function EmptyState({
 
 export function Skeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("relative overflow-hidden rounded-xl bg-slate-100", className)}>
-      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+    <div className={cn("relative overflow-hidden rounded-xl bg-white/5", className)}>
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_infinite] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </div>
   )
 }
@@ -415,14 +415,14 @@ export function ProgressBar({
   className?: string
 }) {
   const colors: Record<string, string> = {
-    primary: "bg-primary",
-    green: "bg-emerald-500",
-    amber: "bg-amber-500",
-    red: "bg-rose-500",
+    primary: "bg-emerald-500",
+    green: "bg-emerald-400",
+    amber: "bg-amber-400",
+    red: "bg-rose-400",
   }
   const pct = Math.min(100, Math.max(0, (value / max) * 100))
   return (
-    <div className={cn("h-2 w-full overflow-hidden rounded-full bg-slate-100", className)}>
+    <div className={cn("h-2 w-full overflow-hidden rounded-full bg-white/5", className)}>
       <div
         className={cn("h-full rounded-full transition-all duration-500", colors[tone])}
         style={{ width: `${pct}%` }}

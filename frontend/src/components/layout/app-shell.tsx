@@ -83,7 +83,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const userMenu = (mobile = false) => (
     <div className={cn("flex items-center gap-3", mobile && "w-full")}>
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary to-emerald-700 text-xs font-bold text-white">
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-xs font-bold text-emerald-950">
         {initials}
       </span>
       <div className="min-w-0 flex-1 leading-tight">
@@ -93,7 +93,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <button
         onClick={handleLogout}
         title="Sign out"
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-ink-muted transition hover:bg-rose-50 hover:text-rose-600"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-ink-muted transition hover:bg-rose-500/10 hover:text-rose-400"
       >
         <LogOut className="h-4 w-4" />
       </button>
@@ -111,7 +111,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <nav className="ml-4 hidden items-center gap-1 md:flex">{navLinks()}</nav>
 
           <div className="ml-auto flex items-center gap-3">
-            <span className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-200 lg:flex">
+            <span className="hidden items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/25 lg:flex">
               <ShieldCheck className="h-3 w-3" />
               Free AI engine · no data stored
             </span>

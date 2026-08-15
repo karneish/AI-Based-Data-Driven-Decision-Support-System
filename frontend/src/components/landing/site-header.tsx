@@ -67,7 +67,7 @@ export function SiteHeader() {
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-soft transition hover:bg-primary-soft/60 hover:text-ink"
+              className="rounded-lg px-3 py-2.5 text-sm font-medium text-ink-soft transition hover:bg-white/5 hover:text-ink"
             >
               {link.label}
             </a>

@@ -206,7 +206,7 @@ export function ReportView({ result }: { result: AnalysisResult }) {
           <div className="flex justify-center py-4">
             <Gauge
               value={result.asi}
-              color={result.risk_color === "green" ? "#059669" : result.risk_color === "amber" ? "#d97706" : "#dc2626"}
+              color={result.risk_color === "green" ? "#34d399" : result.risk_color === "amber" ? "#fbbf24" : "#f87171"}
             />
           </div>
         </Card>

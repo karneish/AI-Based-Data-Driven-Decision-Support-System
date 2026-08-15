@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Eye, EyeOff, KeyRound, UserRound } from "lucide-react";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/components/auth/auth-provider";
-import { Button, Field } from "@/components/ui";
+import { Button, Card, Field } from "@/components/ui";
 import { LogoMark } from "@/components/layout/logo";
 
 const DEMO_ACCOUNTS = [
@@ -51,72 +51,32 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen">
-      <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden border-r border-line bg-gradient-to-br from-primary-soft via-primary-softer to-[#e6f4eb] p-10 lg:flex">
-        <div className="absolute inset-0 bg-grid opacity-50" />
-        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/10 blur-[120px]" />
-        <div className="absolute -bottom-40 -right-24 h-[28rem] w-[28rem] rounded-full bg-emerald-200/40 blur-[130px]" />
-        <div className="relative flex items-center gap-3">
-          <LogoMark className="h-10 w-10" />
-          <span className="text-lg font-bold tracking-tight text-ink">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-10">
+      <div className="absolute inset-0 bg-grid opacity-40" />
+      <div className="absolute left-1/2 top-[-10rem] h-96 w-[42rem] -translate-x-1/2 rounded-full bg-emerald-500/10 blur-[130px]" />
+      <div className="absolute bottom-[-12rem] left-[-8rem] h-96 w-96 rounded-full bg-teal-500/10 blur-[130px]" />
+      <div className="absolute right-[-8rem] top-1/3 h-96 w-96 rounded-full bg-emerald-500/[0.07] blur-[130px]" />
+
+      <div className="relative w-full max-w-md">
+        <div className="mb-8 flex flex-col items-center gap-2.5 text-center">
+          <LogoMark className="h-12 w-12" />
+          <span className="text-xl font-bold tracking-tight text-ink">
             DSS<span className="text-primary">-MIP</span>
           </span>
-        </div>
-        <div className="relative max-w-md">
-          <h2 className="text-3xl font-bold leading-tight text-ink">
-            Data-driven decisions for{" "}
-            <span className="text-gradient">every student.</span>
-          </h2>
-          <p className="mt-4 text-sm leading-relaxed text-ink-soft">
-            Predict success probability with an ensemble of five machine
-            learning models, classify risk in real time and explore
-            counterfactual recommendations — completely free, no database
-            required.
+          <p className="max-w-xs text-sm leading-relaxed text-ink-soft">
+            AI data-driven decision support for student performance.
           </p>
-          <ul className="mt-8 space-y-3 text-sm text-ink-soft">
-            {[
-              "Ensemble of 5 scikit-learn models trained in-memory",
-              "Academic Success Index (ASI) risk classification",
-              "What-if simulator with instant counterfactuals",
-            ].map((item) => (
-              <li key={item} className="flex items-center gap-3">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-[10px] text-emerald-700">
-                  ✓
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
         </div>
-        <p className="relative text-xs text-ink-muted">
-          FastAPI · scikit-learn · Next.js · TypeScript
-        </p>
-      </div>
 
-      <div className="flex flex-1 items-center justify-center px-4 py-10">
-        <div className="w-full max-w-sm">
-          <Link
-            href="/"
-            className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-ink-soft transition hover:text-primary"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to home
-          </Link>
-
-          <div className="mb-6 flex items-center gap-3 lg:hidden">
-            <LogoMark />
-            <span className="text-lg font-bold tracking-tight text-ink">
-              DSS<span className="text-primary">-MIP</span>
-            </span>
-          </div>
-
-          <h1 className="text-2xl font-bold tracking-tight text-ink">
+        <Card className="p-6 sm:p-8">
+          <h1 className="text-lg font-bold tracking-tight text-ink">
             Welcome back
           </h1>
-          <p className="mt-1.5 text-sm text-ink-soft">
-            Sign in to run student analyses and scenarios.
+          <p className="mt-1 text-sm text-ink-soft">
+            Sign in to run analyses and what-if scenarios.
           </p>
 
-          <form onSubmit={submit} className="mt-8 space-y-4">
+          <form onSubmit={submit} className="mt-6 space-y-4">
             <Field
               label="Username"
               id="username"
@@ -152,7 +112,7 @@ export function LoginForm() {
             />
 
             {error ? (
-              <div className="rounded-xl bg-rose-50 px-3.5 py-3 text-sm text-rose-600 ring-1 ring-rose-200">
+              <div className="rounded-xl bg-rose-500/10 px-3.5 py-3 text-sm text-rose-300 ring-1 ring-rose-500/30">
                 {error}
               </div>
             ) : null}
@@ -167,9 +127,9 @@ export function LoginForm() {
             </Button>
           </form>
 
-          <div className="mt-8">
+          <div className="mt-6">
             <div className="mb-3 flex items-center gap-3 text-[11px] font-medium uppercase tracking-wider text-ink-muted">
-              <span className="h-px flex-1 bg-line" /> Try a demo account{" "}
+              <span className="h-px flex-1 bg-line" /> Demo accounts{" "}
               <span className="h-px flex-1 bg-line" />
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -178,7 +138,7 @@ export function LoginForm() {
                   key={acc.username}
                   type="button"
                   onClick={() => fillDemo(acc.username, acc.password)}
-                  className="rounded-xl border border-line bg-white px-3 py-2.5 text-left transition hover:border-primary/40 hover:shadow-sm"
+                  className="rounded-xl border border-line bg-white/[0.04] px-3 py-2.5 text-left transition hover:border-emerald-500/40 hover:bg-white/[0.06]"
                 >
                   <span className="block text-sm font-semibold text-ink">
                     {acc.label}
@@ -190,7 +150,14 @@ export function LoginForm() {
               ))}
             </div>
           </div>
-        </div>
+        </Card>
+
+        <Link
+          href="/"
+          className="mt-6 flex items-center justify-center gap-1.5 text-sm font-medium text-ink-soft transition hover:text-primary"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to home
+        </Link>
       </div>
     </div>
   )

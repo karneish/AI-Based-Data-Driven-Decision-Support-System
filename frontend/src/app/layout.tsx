@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth/auth-provider";
@@ -30,6 +30,10 @@ export const metadata: Metadata = {
       "Predict, simulate and improve student outcomes with an ensemble of five machine learning models — 100% free.",
     type: "website",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#090c0b",
 };
 
 export default function RootLayout({

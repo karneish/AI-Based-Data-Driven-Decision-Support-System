@@ -22,12 +22,12 @@ function Sparkline() {
     <svg viewBox="0 0 322 100" className="w-full">
       <defs>
         <linearGradient id="spark" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#166534" />
-          <stop offset="1" stopColor="#0f766e" />
+          <stop offset="0" stopColor="#34d399" />
+          <stop offset="1" stopColor="#2dd4bf" />
         </linearGradient>
       </defs>
       {[25, 50, 75].map((y) => (
-        <line key={y} x1="0" x2="322" y1={y} y2={y} stroke="#e8f0e9" strokeWidth="1" />
+        <line key={y} x1="0" x2="322" y1={y} y2={y} stroke="#1b231f" strokeWidth="1" />
       ))}
       <path d={`${path} L 322 100 L 0 100 Z`} fill="url(#spark)" opacity="0.12" />
       <path
@@ -45,7 +45,7 @@ function Sparkline() {
           cy={y}
           r={i === points.length - 1 ? 4 : 2.5}
           fill="#fff"
-          stroke={i === points.length - 1 ? "#166534" : "#166534"}
+          stroke={i === points.length - 1 ? "#34d399" : "#34d399"}
           strokeWidth="2"
         />
       ))}
@@ -57,11 +57,11 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-grid [mask-image:linear-gradient(to_bottom,black,transparent_75%)]" />
-      <div className="absolute -top-40 left-1/2 h-[30rem] w-[60rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary/20 via-emerald-500/10 to-teal-500/15 blur-[130px]" />
+      <div className="absolute -top-40 left-1/2 h-[30rem] w-[60rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-emerald-500/20 via-emerald-400/10 to-teal-400/10 blur-[130px]" />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-20 pt-16 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:pb-28 lg:pt-24">
         <div className="animate-fade-up">
-          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-soft px-3.5 py-1.5 text-xs font-semibold text-primary">
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-300">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
@@ -114,7 +114,7 @@ export function Hero() {
 
         <div className="animate-fade-up lg:ml-auto lg:w-[520px]">
           <div className="relative">
-            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-primary/20 via-emerald-500/10 to-teal-500/15 blur-2xl" />
+            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-emerald-500/15 via-emerald-400/[0.06] to-teal-400/10 blur-2xl" />
             <div className="relative rounded-2xl border border-line bg-surface shadow-card">
               <div className="flex items-center justify-between border-b border-line px-5 py-4">
                 <div>
@@ -123,14 +123,14 @@ export function Hero() {
                   </p>
                   <p className="text-xs text-ink-muted">Analysis report · just now</p>
                 </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-200">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/25">
                   <CheckCircle2 className="h-3 w-3" /> Strong Performer
                 </span>
               </div>
 
               <div className="grid grid-cols-3 gap-px border-b border-line bg-line/70">
                 {[
-                  { label: "Success prob", value: "86.4%", tone: "text-emerald-600" },
+                  { label: "Success prob", value: "86.4%", tone: "text-emerald-400" },
                   { label: "ASI index", value: "82.0", tone: "text-ink" },
                   { label: "Confidence", value: "91.3%", tone: "text-ink" },
                 ].map((kpi) => (
@@ -162,9 +162,9 @@ export function Hero() {
                   ].map((row) => (
                     <div key={row.model} className="flex items-center gap-2 text-xs">
                       <span className="w-32 text-ink-soft">{row.model}</span>
-                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/5">
                         <div
-                          className={`h-full rounded-full ${row.best ? "bg-primary" : "bg-slate-300"}`}
+                          className={`h-full rounded-full ${row.best ? "bg-primary" : "bg-white/15"}`}
                           style={{ width: `${row.value}%` }}
                         />
                       </div>

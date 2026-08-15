@@ -177,7 +177,7 @@ export function ModelsView() {
 
       <Card className="border-t-4 border-t-primary">
         <div className="flex flex-col gap-4 p-5 md:flex-row md:items-center">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-emerald-700 text-white shadow-sm shadow-primary/30">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-emerald-950 shadow-[0_8px_24px_-8px_rgba(16,185,129,0.5)]">
             <Trophy className="h-5 w-5" />
           </div>
           <div className="flex-1">
@@ -228,7 +228,7 @@ export function ModelsView() {
                       onClick={() => setSelected(m)}
                       className={cn(
                         "cursor-pointer border-b border-line transition last:border-0",
-                        active ? "bg-primary-soft/60" : "hover:bg-slate-50"
+                        active ? "bg-emerald-500/10" : "hover:bg-white/[0.03]"
                       )}
                     >
                       <td className="px-5 py-3">

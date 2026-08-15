@@ -23,7 +23,7 @@ export function Gauge({
   value,
   size = 180,
   label,
-  color = "#166534",
+  color = "#34d399",
 }: {
   value: number
   size?: number
@@ -51,7 +51,7 @@ export function Gauge({
         <path
           d={`M ${start.x} ${start.y} A ${radius} ${radius} 0 0 1 ${end.x} ${end.y}`}
           fill="none"
-          stroke="#e2e8f0"
+          stroke="#232b27"
           strokeWidth={stroke}
           strokeLinecap="round"
         />
@@ -70,7 +70,7 @@ export function Gauge({
           dominantBaseline="central"
           className="tabular font-bold"
           fontSize={size * 0.2}
-          fill="#062414"
+          fill="#edf4f0"
         >
           {Math.round(clamped)}
         </text>
@@ -79,7 +79,7 @@ export function Gauge({
           y={cy + size * 0.11}
           textAnchor="middle"
           fontSize={11}
-          fill="#94a3b8"
+          fill="#7d9086"
         >
           {label ?? "out of 100"}
         </text>
@@ -106,7 +106,7 @@ export function RiskTierScale({
       <div
         className="relative h-3 w-full overflow-hidden rounded-full"
         style={{
-          background: "linear-gradient(to right, #f43f5e, #f59e0b 45%, #10b981 75%, #059669)",
+          background: "linear-gradient(to right, #fb7185, #fbbf24 45%, #34d399 75%, #10b981)",
         }}
       >
         <div
@@ -141,7 +141,7 @@ export function RadarPanel({ data }: { data: Record<string, number> }) {
             })
             .join(" ")}
           fill="none"
-          stroke="#e2e8f0"
+          stroke="#232b27"
           strokeWidth={1}
         />
       ))}
@@ -154,21 +154,21 @@ export function RadarPanel({ data }: { data: Record<string, number> }) {
               y1={130}
               x2={170 + 105 * Math.cos(rad)}
               y2={130 + 105 * Math.sin(rad)}
-              stroke="#e2e8f0"
+              stroke="#232b27"
               strokeWidth={1}
             />
             <circle
               cx={170 + 105 * Math.cos(rad)}
               cy={130 + 105 * Math.sin(rad)}
               r={3}
-              fill="#166534"
+              fill="#34d399"
             />
             <text
               x={170 + 125 * Math.cos(rad)}
               y={130 + 125 * Math.sin(rad) + 4}
               textAnchor="middle"
               fontSize={11}
-              fill="#324f3c"
+              fill="#a6b7ad"
               fontWeight={500}
             >
               {row.subject}
@@ -184,8 +184,8 @@ export function RadarPanel({ data }: { data: Record<string, number> }) {
             return `${170 + r * Math.cos(rad)},${130 + r * Math.sin(rad)}`
           })
           .join(" ")}
-        fill="rgba(22,101,52,0.16)"
-        stroke="#166534"
+        fill="rgba(16,185,129,0.14)"
+        stroke="#10b981"
         strokeWidth={2}
         strokeLinejoin="round"
       />
@@ -208,7 +208,7 @@ export function BenchmarkChart({ data }: { data: AnalysisResult["bar_data"] }) {
                 {d.score.toFixed(1)} <span className="text-ink-muted">/ 100</span>
               </span>
             </div>
-            <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-white/5">
               <div
                 className={cn(
                   "h-full rounded-full transition-all duration-700",
@@ -257,7 +257,7 @@ export function ModelBars({
               {p.probability.toFixed(1)}%
             </span>
           </div>
-          <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
+          <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-white/5">
             <div
               className={cn(
                 "h-full rounded-full transition-all duration-700",
@@ -304,7 +304,7 @@ export function FeatureList({
               {(item.importance * 100).toFixed(1)}%
             </span>
           </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+          <div className="h-2 w-full overflow-hidden rounded-full bg-white/5">
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{
@@ -341,7 +341,7 @@ export function MetricsRadar({
             })
             .join(" ")}
           fill="none"
-          stroke="#e2e8f0"
+          stroke="#232b27"
           strokeWidth={1}
         />
       ))}
@@ -354,7 +354,7 @@ export function MetricsRadar({
               y1={130}
               x2={170 + 100 * Math.cos(rad)}
               y2={130 + 100 * Math.sin(rad)}
-              stroke="#e2e8f0"
+              stroke="#232b27"
               strokeWidth={1}
             />
             <text
@@ -362,7 +362,7 @@ export function MetricsRadar({
               y={130 + 125 * Math.sin(rad) + 4}
               textAnchor="middle"
               fontSize={10.5}
-              fill="#324f3c"
+              fill="#a6b7ad"
               fontWeight={500}
             >
               {m.model.replace(" Gradient Boosting", " GB")}
@@ -378,12 +378,12 @@ export function MetricsRadar({
             return `${170 + r * Math.cos(rad)},${130 + r * Math.sin(rad)}`
           })
           .join(" ")}
-        fill="rgba(22,101,52,0.16)"
-        stroke="#166534"
+        fill="rgba(16,185,129,0.14)"
+        stroke="#10b981"
         strokeWidth={2}
         strokeLinejoin="round"
       />
-      <text x={170} y={248} textAnchor="middle" fontSize={11} fill="#94a3b8">
+      <text x={170} y={248} textAnchor="middle" fontSize={11} fill="#7d9086">
         {metricLabel}
       </text>
     </svg>
@@ -417,11 +417,11 @@ export function MetricBars({ models }: { models: ModelMetrics[] }) {
                     <span className="w-32 truncate text-[11px] text-ink-soft">
                       {m.model}
                     </span>
-                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
+                    <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/5">
                       <div
                         className={cn(
                           "h-full rounded-full",
-                          v === best ? "bg-primary" : "bg-slate-400/60"
+                          v === best ? "bg-primary" : "bg-white/15"
                         )}
                         style={{ width: `${v}%` }}
                       />

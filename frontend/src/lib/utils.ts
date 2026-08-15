@@ -16,25 +16,25 @@ export function formatNumber(value: number, digits = 1): string {
 export function riskTone(color: "green" | "amber" | "red") {
   if (color === "green")
     return {
-      badge: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-      gradient: "from-emerald-500/15 to-emerald-500/5 text-emerald-700",
-      bar: "bg-emerald-500",
-      text: "text-emerald-600",
+      badge: "bg-emerald-500/10 text-emerald-300 ring-emerald-500/30",
+      gradient: "from-emerald-500/15 to-emerald-500/5 text-emerald-300",
+      bar: "bg-emerald-400",
+      text: "text-emerald-300",
       label: "Stable",
     }
   if (color === "amber")
     return {
-      badge: "bg-amber-50 text-amber-700 ring-amber-200",
-      gradient: "from-amber-500/15 to-amber-500/5 text-amber-700",
-      bar: "bg-amber-500",
-      text: "text-amber-600",
+      badge: "bg-amber-500/10 text-amber-300 ring-amber-500/30",
+      gradient: "from-amber-500/15 to-amber-500/5 text-amber-300",
+      bar: "bg-amber-400",
+      text: "text-amber-300",
       label: "Monitor",
     }
   return {
-    badge: "bg-rose-50 text-rose-700 ring-rose-200",
-    gradient: "from-rose-500/15 to-rose-500/5 text-rose-700",
-    bar: "bg-rose-500",
-    text: "text-rose-600",
+    badge: "bg-rose-500/10 text-rose-300 ring-rose-500/30",
+    gradient: "from-rose-500/15 to-rose-500/5 text-rose-300",
+    bar: "bg-rose-400",
+    text: "text-rose-300",
     label: "Intervene",
   }
 }
@@ -44,19 +44,19 @@ export function impactTone(
 ): { badge: string; text: string; bar: string } {
   if (impact === "High")
     return {
-      badge: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-      text: "text-emerald-600",
-      bar: "bg-emerald-500",
+      badge: "bg-emerald-500/10 text-emerald-300 ring-emerald-500/30",
+      text: "text-emerald-300",
+      bar: "bg-emerald-400",
     }
   if (impact === "Medium")
     return {
-      badge: "bg-amber-50 text-amber-700 ring-amber-200",
-      text: "text-amber-600",
-      bar: "bg-amber-500",
+      badge: "bg-amber-500/10 text-amber-300 ring-amber-500/30",
+      text: "text-amber-300",
+      bar: "bg-amber-400",
     }
   return {
-    badge: "bg-slate-100 text-slate-600 ring-slate-200",
-    text: "text-slate-500",
-    bar: "bg-slate-400",
+    badge: "bg-white/5 text-slate-300 ring-white/10",
+    text: "text-slate-300",
+    bar: "bg-white/20",
   }
 }

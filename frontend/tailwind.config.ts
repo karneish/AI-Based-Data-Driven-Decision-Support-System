@@ -18,6 +18,7 @@ const config: Config = {
         "primary-softer": rgb("primary-softer"),
         bg: rgb("bg"),
         surface: rgb("surface"),
+        "surface-2": rgb("surface-2"),
         line: rgb("line"),
         "line-strong": rgb("line-strong"),
         ink: rgb("ink"),
