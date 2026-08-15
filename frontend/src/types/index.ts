@@ -74,3 +74,5 @@ export interface ModelComparisonData {
     classes: string[]
   }
 }
+
+export type DashboardTab = 'home' | 'analyze' | 'simulate' | 'models' | 'report'

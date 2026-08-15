@@ -107,42 +107,55 @@ User Input → Preprocessing → ML Prediction → ASI Computation
 
 ```
 dss-mip/
-├── backend/
-│   ├── main.py                 # FastAPI server + ML model + all API endpoints
-│   ├── requirements.txt        # Python dependencies
-│   └── student_data.csv        # Training dataset (1,000+ student records)
-├── frontend/
-│   ├── public/
-│   │   └── favicon.svg         # Browser tab icon
+├── backend/                       # Python FastAPI service
+│   ├── app/
+│   │   ├── main.py                # FastAPI entry point (uvicorn app.main:app)
+│   │   ├── config.py              # Centralised settings & thresholds
+│   │   ├── api/routes/            # HTTP routes (auth, analysis, models, health)
+│   │   ├── schemas/               # Pydantic DTOs
+│   │   ├── core/                  # Domain logic (ASI, risk, recommendations)
+│   │   ├── services/              # Business orchestration
+│   │   ├── models/                # ML training & model registry
+│   │   └── data/                  # Datasets (student_data.csv)
+│   ├── tests/                     # Pytest API tests
+│   ├── requirements.txt           # Runtime dependencies
+│   └── requirements-dev.txt       # Test dependencies
+├── frontend/                      # React + TypeScript + Vite SPA
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── Infographics.tsx       # Home overview + architecture diagram
-│   │   │   ├── InputForm.tsx          # Student data form with sliders & dropdown
-│   │   │   ├── ResultPanel.tsx        # Full report: charts + recommendations
-│   │   │   └── SimulatorPanel.tsx     # What-if simulation interface
-│   │   ├── pages/
-│   │   │   ├── LandingPage.tsx        # Hero, features, CTA
-│   │   │   ├── LoginPage.tsx          # Login with name reflection
-│   │   │   ├── Dashboard.tsx          # Main app shell with sidebar navigation
-│   │   │   └── ModelComparison.tsx    # Multi-algorithm comparison
-│   │   ├── types/
-│   │   │   └── index.ts              # TypeScript interfaces & types
-│   │   ├── utils/
-│   │   │   └── api.ts                # Axios API client configuration
-│   │   ├── App.tsx                    # Root component with routing
-│   │   ├── main.tsx                   # Application entry point
-│   │   └── index.css                  # Global styles + Tailwind directives
-│   ├── index.html                     # HTML entry point
-│   ├── package.json                   # Node dependencies & scripts
-│   ├── tailwind.config.js             # Tailwind CSS configuration
-│   ├── vite.config.ts                 # Vite bundler configuration
-│   ├── tsconfig.json                  # TypeScript configuration
-│   └── postcss.config.js              # PostCSS configuration
-├── .gitignore                         # Git exclusion rules
-├── start.bat                          # Windows startup script
-├── start.sh                           # Unix/Mac startup script
-└── README.md                          # Project documentation (this file)
+│   │   ├── app/App.tsx            # Root component
+│   │   ├── features/              # Feature-first modules
+│   │   │   ├── home/              #   Landing page + overview
+│   │   │   ├── auth/              #   Login
+│   │   │   ├── analysis/          #   Input form + report
+│   │   │   ├── simulation/        #   What-if simulator
+│   │   │   └── models/            #   Model comparison
+│   │   ├── layouts/Dashboard.tsx  # Authenticated app shell
+│   │   ├── components/            # Shared UI, charts & layout chrome
+│   │   ├── hooks/                 # Reusable React hooks
+│   │   ├── constants/             # Domain constants & presets
+│   │   ├── lib/api.ts             # Axios API client
+│   │   ├── types/                 # TypeScript interfaces
+│   │   ├── styles/                # Global styles + Tailwind
+│   │   └── main.tsx               # Application bootstrap
+│   ├── public/
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   └── postcss.config.js
+├── docs/                          # Architecture, API & development docs
+├── scripts/                       # start-dev.bat / start-dev.sh
+├── .github/workflows/ci.yml       # CI pipeline
+├── Dockerfile.backend             # Backend container image
+├── Dockerfile.frontend            # Frontend container image
+├── docker-compose.yml             # Local container orchestration
+├── .env.example                   # Environment template
+├── LICENSE                        # MIT license
+└── README.md                      # This file
 ```
+
+> A detailed annotated breakdown lives in [`docs/project-structure.md`](docs/project-structure.md).
 
 ---
 
@@ -153,6 +166,8 @@ dss-mip/
 - **Python 3.10+** — [Download](https://www.python.org/downloads/)
 - **Node.js 18+** — [Download](https://nodejs.org/)
 - **npm 9+** or **yarn** — Package manager
+
+> **Quick start:** run `scripts\start-dev.bat` (Windows) or `./scripts/start-dev.sh` (Unix/macOS) to launch both servers automatically.
 
 ### 1. Backend Setup
 
@@ -168,7 +183,7 @@ source venv/bin/activate    # Linux/Mac
 pip install -r requirements.txt
 
 # Start the FastAPI server
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The backend will be available at: **http://localhost:8000**
@@ -303,8 +318,10 @@ To run the backend in production:
 
 ```bash
 cd backend
-uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
+
+For containerised deployment, see [`docs/development.md`](docs/development.md) and the included `docker-compose.yml`.
 
 ---
 
