@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  ScanSearch,
   ShieldCheck,
   SlidersHorizontal,
   X,
@@ -21,6 +22,11 @@ const NAV_ITEMS = [
     href: "/dashboard",
     label: "Dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    href: "/analyze",
+    label: "Analyze",
+    icon: ScanSearch,
   },
   {
     href: "/simulate",
