@@ -2,32 +2,31 @@
 
 ## Overview
 
-DSS-MIP is an AI-based Decision Support System that evaluates student academic stability using machine learning, composite scoring, and interactive visualisation. The entire application — API and web UI — runs inside a single FastAPI process.
+DSS-MIP is an AI-based Decision Support System that evaluates student academic stability using machine learning, composite scoring, and interactive visualisation. The product is split into **two tiers**:
+
+- **Frontend** — Next.js + React + TypeScript (Vercel). A bespoke corporate design system, fully responsive.
+- **Backend** — FastAPI REST API (Render). Pure JSON, CORS-enabled, with the ML engine trained in memory.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                      CLIENT (Browser)                                │
+│                    FRONTEND (Next.js on Vercel)                      │
 │  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌────────────────────┐  │
-│  │ Landing  │  │  Login   │  │ Dashboard  │  │  Simulator /       │  │
-│  │  Page    │  │  Page    │  │  (Shell)   │  │  Model Compare     │  │
-│  └──────────┘  └──────────┘  └─────┬─────┘  └────────────────────┘  │
-│                                     │                                │
-│                   Jinja2-rendered HTML + static CSS/JS               │
-│                   Chart.js for radar / bar / gauge visualisations   │
+│  │ Landing  │  │  Login   │  │ Dashboard │  │ Simulator / Models │  │
+│  └──────────┘  └──────────┘  └───────────┘  └────────────────────┘  │
+│      React + TypeScript · Tailwind · custom SVG charts              │
 └──────────────────────────────────┬───────────────────────────────────┘
-                                   │ HTTP
+                                   │ HTTP JSON (CORS)
                                    ▼
 ┌──────────────────────────────────────────────────────────────────────┐
-│                        SERVER (FastAPI + Uvicorn)                   │
+│                      BACKEND (FastAPI on Render)                     │
 │  ┌──────────────┐  ┌──────────────┐  ┌───────────────────────────┐  │
-│  │  Page routes │  │ /api/analyze │  │      /api/simulate         │  │
-│  │ (/, /login,  │  │ ML Analysis  │  │   What-If Simulation       │  │
-│  │  /dashboard… │  └──────┬───────┘  └───────────────────────────┘  │
-│  │  + sessions) │         │                                         │
-│  └──────────────┘   ┌─────▼─────────┐                               │
-│                      │ Models (sklearn)│ 5 algorithms, trained at   │
-│                      │  + ASI + Risk   │ startup on student_data.csv │
-│                      └─────────────────┘                             │
+│  │ /api/login   │  │ /api/analyze │  │      /api/simulate         │  │
+│  │  auth        │  │ ML Analysis  │  │   What-If Simulation       │  │
+│  └──────────────┘  └──────┬───────┘  └───────────────────────────┘  │
+│                     ┌─────▼─────────┐                               │
+│                     │ Models (sklearn)│ 5 algorithms, trained at    │
+│                     │  + ASI + Risk   │ startup on student_data.csv │
+│                     └─────────────────┘                             │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -35,11 +34,11 @@ DSS-MIP is an AI-based Decision Support System that evaluates student academic s
 
 The backend is organised as a small hexagonal-style Python package:
 
-1. **HTTP layer** — `app/main.py` defines page routes (Jinja2 templates, signed-cookie sessions); `app/api/routes` maps `/api/*` verbs to handlers, delegating to services.
+1. **HTTP layer** — `app/main.py` mounts the CORS middleware, includes `app/api/routes` (`/api/*`) and redirects `/` to the frontend URL; `app/api/routes` maps verbs to handlers, delegating to services.
 2. **Service layer** — `app/services/analysis.py` composes the full analysis pipeline.
 3. **Domain layer** — `app/core` holds pure rules: ASI formula, risk thresholds, recommendation engine, chart-payload builders, user registry.
 4. **ML layer** — `app/models/trainer.py` loads the CSV, trains five classifiers (Logistic Regression, Decision Tree, Random Forest, K-Nearest Neighbors, Gradient Boosting), calibrates the class threshold (Youden's J) and ASI weights, and keeps an in-memory registry used at request time.
-5. **Configuration** — `app/config.py` centralises every tunable (feature lists, dataset stats, session secret); thresholds and weights are learned from data at startup.
+5. **Configuration** — `app/config.py` centralises every tunable (feature lists, dataset stats, frontend URL); thresholds and weights are learned from data at startup.
 
 ### Data flow
 
@@ -49,38 +48,36 @@ User Input → Pydantic validation → Scaler transform
   → ASI composite (data-calibrated weights: ML · Attendance · Study Hours)
   → Risk classification (data-calibrated bands: Stable / Monitor / Intervention)
   → Counterfactual recommendation engine (ranked by predicted probability gain)
-  → JSON payload → Chart.js visualisation
+  → JSON payload → React report visualisations
 ```
 
 Models are trained once at process startup; runtime requests only perform inference, keeping the API responsive.
 
 ## Frontend architecture
 
-The web UI is server-rendered with **Jinja2 templates** (no build step, no Node). Each page extends a shared layout:
+The UI is a **Next.js 14 App Router** application with TypeScript throughout:
 
-| Template | Responsibility |
-|---|---|
-| `base.html` | HTML skeleton, fonts, Chart.js CDN, background scene, shared `app.js` |
-| `app.html` | Authenticated shell — sidebar navigation + topbar + user chip |
-| `landing.html` | Public landing page + platform overview |
-| `login.html` | Sign-in form posting to `/login` |
-| `dashboard.html` | Student input form (sliders, presets) + full ML report |
-| `simulate.html` | What-if scenario sliders with live re-analysis |
-| `models.html` | Side-by-side algorithm performance comparison |
+| Area | Location | Responsibility |
+|---|---|---|
+| Pages | `src/app/` | Landing, `/login`, and the protected `(app)` group (`/dashboard`, `/simulate`, `/models`) |
+| UI kit | `src/components/ui.tsx` | Buttons, cards, fields, sliders, badges, stat cards, skeleton loaders |
+| Charts | `src/components/charts.tsx` | Custom SVG gauge, radar, benchmark bars, model agreement, feature lists |
+| Forms | `src/components/forms/student-form.tsx` | 8-indicator input with presets + debounced simulate mode |
+| Report | `src/components/report/report-view.tsx` | KPI grid, risk banner, charts, counterfactual recommendations |
+| Shell | `src/components/layout/app-shell.tsx` | Responsive sidebar (desktop) / drawer (mobile) + topbar |
+| API client | `src/lib/api.ts` | Typed `fetch` wrapper; base URL via `NEXT_PUBLIC_API_BASE_URL` |
 
-Page logic lives in `static/js/*` and styling in `static/css/app.css` (dark glassmorphism design system). Sessions are managed server-side with a signed cookie (`itsdangerous`).
+Auth is client-side: `/api/login` returns a JSON user, stored in `localStorage`; the `(app)` group layout guards protected routes and redirects to `/login`.
 
 ## Deployment topologies
 
 | Mode | Description |
 |---|---|
-| **Development** | Single Uvicorn process on `:8000` serves pages + `/api` (hot-reload) |
-| **Single service (Docker / Render)** | One Python container; FastAPI serves `/`, `/static/*` and `/api/*` |
-| **Vercel** | One FastAPI service (`vercel.json` → `backend`, entrypoint `app/main.py`) |
+| **Development** | Uvicorn on `:8000` (backend) + `next dev` on `:3000` (frontend), Vite-style hot reload |
+| **Render** | One Python container from `Dockerfile`; FastAPI serves `/api/*` |
+| **Vercel** | One Next.js service (`vercel.json` → `frontend`, framework `nextjs`) |
 
-The app is fully self-contained in one Python service — no nginx, no Node, no separate static host required.
-
-## AI engine (Tier 1)
+## AI engine (100% free)
 
 | Component | Implementation |
 |---|---|
@@ -88,3 +85,4 @@ The app is fully self-contained in one Python service — no nginx, no Node, no 
 | **Ensemble** | Soft-vote mean of all model probabilities; `confidence` = % of models agreeing on the class |
 | **Calibrated thresholds** | Class cutoff derived via Youden's J (ROC) on held-out data; risk bands and ASI weights learned from the training data at startup |
 | **Counterfactual recommendations** | Each actionable feature is simulated against the trained ensemble; predicted probability gain ranks the top 4 recommendations per student |
+| **Cost** | Zero — scikit-learn runs locally in the container; no API keys, no cloud AI, no database |

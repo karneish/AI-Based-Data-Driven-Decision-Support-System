@@ -5,6 +5,7 @@
 docs
 scripts
 node_modules
+frontend/.next
 backend/.venv
 backend/venv
 backend/__pycache__

@@ -1,15 +1,19 @@
 # AI-DSS: AI-Based Data-Driven Decision Support System
 
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14.2-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Jinja2](https://img.shields.io/badge/Jinja2-3.1+-B41717?logo=jinja&logoColor=white)](https://jinja.palletsprojects.com/)
 [![Scikit-learn](https://img.shields.io/badge/scikit--learn-1.5+-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
-[![Chart.js](https://img.shields.io/badge/Chart.js-4.4-FF6384?logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A full-stack, production-grade Decision Support System that evaluates student academic stability using machine learning, interactive visualisations, and real-time what-if simulation — served entirely by a **single FastAPI + Jinja2 Python process** (no Node.js build step).
+A full-stack, production-grade Decision Support System that evaluates student academic stability using machine learning, interactive visualisations, and real-time what-if simulation.
 
-Built as an academic mini-project, this system demonstrates the integration of **five ML classifiers**, **composite scoring (ASI)**, **counterfactual recommendations**, and a **dark-glassmorphism server-rendered dashboard** into a cohesive analytics platform.
+- **Frontend:** Next.js + React + TypeScript with a bespoke corporate design system (Tailwind CSS), fully responsive on mobile, tablet and desktop.
+- **Backend:** Python FastAPI REST API — CORS-enabled, documented, versioned.
+- **AI layer:** Five scikit-learn classifiers trained **in memory** at startup on `student_data.csv`. **100% free** — no API keys, no cloud AI, no database.
+
+Built as an academic mini-project, this system demonstrates the integration of **five ML classifiers**, **composite scoring (ASI)**, **counterfactual recommendations**, **model transparency**, and a **what-if simulator** into a cohesive analytics platform.
 
 ---
 
@@ -31,16 +35,17 @@ Built as an academic mini-project, this system demonstrates the integration of *
 
 ## Key Features
 
-- **Landing Page** — Hero section, feature cards, and system overview
-- **Authentication** — Signed-cookie sessions (`itsdangerous`) with demo quick-fill
-- **Student Input Form** — Slider-based form for all 8 academic indicators with preset profile dropdown
+- **Corporate-grade landing page** — hero with live model preview, feature grid, how-it-works, live model insights, and tech stack sections
+- **Authentication** — JSON login against the API; the SPA persists the session locally (no cookies, no database)
+- **Student Input Form** — Slider-based form for all 8 academic indicators with quick presets (Balanced / High Achiever / At Risk)
 - **ML-Powered Analysis** — 5-model ensemble (soft vote) via FastAPI for real-time predictions
 - **Academic Stability Index (ASI)** — Data-calibrated weighted composite of ML probability, attendance, and study habits
 - **Risk Classification** — Three-tier risk categorisation: Stable, Monitor Closely, Intervention Required
-- **Interactive Visualisations** — Radar (spider) chart, feature importance bar chart, score-vs-benchmark column chart, and ASI gauge (Chart.js)
-- **AI-Generated Reports** — Detailed overall report with ranked recommendations, impact ratings, and printable PDF export
-- **What-If Simulator** — Real-time re-analysis with adjusted parameters for scenario exploration
-- **Model Comparison** — Side-by-side evaluation of five ML algorithms with confusion matrices
+- **Interactive Visualisations** — ASI gauge, radar (spider) chart, score-vs-benchmark bars, model agreement bars, and feature importance (custom SVG, no charting CDN)
+- **Counterfactual Recommendations** — Ranked actions with predicted probability gain and impact ratings
+- **What-If Simulator** — Live re-analysis as sliders move (debounced) for scenario exploration
+- **Model Comparison** — Side-by-side evaluation of five ML algorithms with sortable metrics, metric radars and confusion matrices
+- **Export / Print** — Print-optimised reports (browser print → PDF)
 
 ---
 
@@ -48,14 +53,14 @@ Built as an academic mini-project, this system demonstrates the integration of *
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| **Frontend** | Jinja2 + HTML/CSS/JS | Server-rendered pages (no build step) |
-| **Styling** | Custom CSS | Dark glassmorphism design system |
-| **Charts** | Chart.js (CDN) | Radar, bar, gauge visualisations |
-| **Sessions** | itsdangerous | Signed login cookies |
-| **Backend** | Python 3 + FastAPI | Web pages + REST API |
+| **Frontend** | Next.js 14 + React 18 + TypeScript | App Router, SSR, typed UI |
+| **Styling** | Tailwind CSS 3.4 | Bespoke corporate design system |
+| **Charts** | Custom SVG + Recharts | Gauge, radar, bars — no CDN dependency |
+| **Icons** | lucide-react | Crisp, consistent iconography |
+| **Backend** | Python 3 + FastAPI | Versioned JSON REST API |
 | **ML Model** | scikit-learn | 5 classifiers + soft-vote ensemble |
 | **Data Processing** | Pandas + NumPy | Dataset handling and feature engineering |
-| **HTTP Client** | fetch API | Browser-to-API communication |
+| **HTTP Client** | native `fetch` | Browser-to-API communication |
 
 ---
 
@@ -63,17 +68,17 @@ Built as an academic mini-project, this system demonstrates the integration of *
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                      CLIENT (Browser)                                │
-│  Landing · Login · Dashboard · Simulator · Model Comparison          │
-│            Jinja2 HTML + CSS + Chart.js                              │
+│                     CLIENT (Browser)  →  Vercel                       │
+│   Landing · Login · Dashboard · Simulator · Model Insights            │
+│   Next.js + React + TypeScript (responsive, SSR)                      │
 └──────────────────────────────────┬───────────────────────────────────┘
-                                   │ HTTP
+                                   │ HTTP JSON (CORS-enabled)
                                    ▼
 ┌──────────────────────────────────────────────────────────────────────┐
-│                SERVER (FastAPI + Uvicorn — one process)             │
-│  Page routes (/ , /login, /dashboard, /simulate, /models, /static)  │
-│  JSON API     (/api/analyze, /api/simulate, /api/model-comparison…) │
-│  ML engine    (5 models trained at startup on student_data.csv)      │
+│            BACKEND (FastAPI + Uvicorn on Render)                      │
+│   JSON API  (/api/analyze, /api/simulate, /api/model-comparison…)     │
+│   ML engine (5 models trained at startup on student_data.csv)         │
+│   No database · No cloud AI · No API keys                             │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -81,7 +86,7 @@ Built as an academic mini-project, this system demonstrates the integration of *
 
 ```
 User Input → Preprocessing → ML Prediction → ASI Computation
-    → Risk Classification → Recommendations → Visual Dashboard
+    → Risk Classification → Recommendations → Interactive Report
 ```
 
 ---
@@ -90,29 +95,35 @@ User Input → Preprocessing → ML Prediction → ASI Computation
 
 ```
 dss-mip/
+├── frontend/                     # Next.js + React + TypeScript app
+│   ├── src/app/                  # App Router pages (landing, login, app group)
+│   ├── src/components/           # UI kit, charts, forms, report, layout
+│   ├── src/lib/                  # API client + utilities
+│   ├── src/types/                # Shared TypeScript contracts
+│   ├── .env.example              # NEXT_PUBLIC_API_BASE_URL template
+│   └── package.json
 ├── backend/
 │   ├── app/
-│   │   ├── main.py                # FastAPI entry (pages + API + sessions)
-│   │   ├── config.py              # Centralised settings & thresholds
-│   │   ├── api/routes/            # HTTP JSON API (auth, analysis, models, health)
-│   │   ├── schemas/               # Pydantic DTOs
-│   │   ├── core/                  # Domain logic (ASI, risk, recommendations)
-│   │   ├── services/              # Business orchestration
-│   │   ├── models/                # ML training & model registry
-│   │   ├── templates/             # Jinja2 pages
-│   │   ├── static/                # CSS / JS / favicon
-│   │   └── data/                  # Datasets (student_data.csv)
-│   ├── tests/                     # Pytest API tests
-│   ├── requirements.txt           # Runtime dependencies
-│   └── requirements-dev.txt       # Test dependencies
-├── docs/                          # Architecture, API & development docs
-├── scripts/                       # start-dev.bat / start-dev.sh
-├── .github/workflows/ci.yml       # CI pipeline
-├── Dockerfile                    # Single Python container
-├── docker-compose.yml             # Local container orchestration
-├── .env.example                   # Environment template
-├── LICENSE                        # MIT license
-└── README.md                      # This file
+│   │   ├── main.py               # FastAPI entry (CORS + routers + / redirect)
+│   │   ├── config.py             # Centralised settings & thresholds
+│   │   ├── api/routes/           # HTTP JSON API (auth, analysis, models, health)
+│   │   ├── schemas/              # Pydantic DTOs
+│   │   ├── core/                 # Domain logic (ASI, risk, recommendations)
+│   │   ├── services/             # Business orchestration
+│   │   ├── models/               # ML training & model registry
+│   │   └── data/                 # Datasets (student_data.csv)
+│   ├── tests/                    # Pytest API tests
+│   ├── requirements.txt          # Runtime dependencies
+│   └── requirements-dev.txt      # Test dependencies
+├── docs/                         # Architecture, API & development docs
+├── scripts/                      # start-dev.bat / start-dev.sh
+├── .github/workflows/ci.yml      # CI pipeline (backend + frontend)
+├── Dockerfile                    # Python backend container
+├── docker-compose.yml            # Local container orchestration
+├── vercel.json                   # Vercel frontend service config
+├── .env.example                  # Environment template
+├── LICENSE                       # MIT license
+└── README.md                     # This file
 ```
 
 > A detailed annotated breakdown lives in [`docs/project-structure.md`](docs/project-structure.md).
@@ -124,10 +135,12 @@ dss-mip/
 ### Prerequisites
 
 - **Python 3.10+** — [Download](https://www.python.org/downloads/)
+- **Node.js 18+** — [Download](https://nodejs.org/)
+- npm (bundled with Node.js)
 
-> **Quick start:** run `scripts\start-dev.bat` (Windows) or `./scripts/start-dev.sh` (Unix/macOS) to launch the server automatically.
+> **Quick start:** run `scripts\start-dev.bat` (Windows) or `./scripts/start-dev.sh` (Unix/macOS) to launch both servers.
 
-### Setup
+### Setup (backend)
 
 ```bash
 cd backend
@@ -140,13 +153,27 @@ source venv/bin/activate    # Linux/Mac
 # Install dependencies
 pip install -r requirements.txt
 
-# Start the server (trains models at startup)
+# Start the API (trains models at startup)
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-The app is available at: **http://localhost:8000**
-
 Interactive API documentation: **http://localhost:8000/docs**
+
+### Setup (frontend)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The app is available at: **http://localhost:3000**
+
+In dev mode the frontend calls `http://localhost:8000` by default. To point it at a different API, create `frontend/.env.local`:
+
+```bash
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
+```
 
 ---
 
@@ -243,23 +270,24 @@ ASI = (ML Probability × 0.50)
 
 ## Production Build
 
-The FastAPI backend serves both the API (`/api/*`) and the server-rendered web UI (`/`), so a single Python service hosts the entire app. To run it locally as a single service:
+Two services, both on free tiers:
+
+1. **Vercel** — hosts the Next.js frontend (root `vercel.json` points at `frontend/`).
+2. **Render** — hosts the FastAPI backend as a single-worker Docker web service (`Dockerfile`).
 
 ```bash
+# Build the frontend
+cd frontend && npm run build
+
+# Build the backend image locally
+docker compose build
 docker compose up -d
-# App + API docs: http://localhost:8000
-```
-
-Or run the backend directly:
-
-```bash
-cd backend
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+# API docs: http://localhost:8000/docs
 ```
 
 > Use a **single worker** — the models are trained in memory at startup and shared within the process.
 
-Deployment targets: **Render** (Docker web service) and **Vercel** (single FastAPI service, see root `vercel.json`). See [`docs/development.md`](docs/development.md) for details.
+See [`docs/development.md`](docs/development.md) for deployment details.
 
 ---
 
@@ -284,10 +312,10 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Acknowledgements
 
 - Built as a Mini Project for academic submission
+- [Next.js](https://nextjs.org/) — React framework with SSR
 - [FastAPI](https://fastapi.tiangolo.com/) — Modern Python web framework
 - [scikit-learn](https://scikit-learn.org/) — Machine learning toolkit
-- [Chart.js](https://www.chartjs.org/) — Composable charting library
-- [Jinja2](https://jinja.palletsprojects.com/) — Server-side templating engine
+- [Tailwind CSS](https://tailwindcss.com/) — Utility-first styling
 
 ---
 

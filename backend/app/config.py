@@ -53,10 +53,9 @@ class Settings:
 
     DEFAULT_MODEL: str = "Logistic Regression"
 
-    SESSION_SECRET: str = os.getenv(
-        "SESSION_SECRET", "dss-mip-dev-secret-change-me-in-production"
+    FRONTEND_URL: str = os.getenv(
+        "FRONTEND_URL", "https://ai-dss-three.vercel.app"
     )
-    SESSION_MAX_AGE: int = int(os.getenv("SESSION_MAX_AGE", "86400"))
 
     DATASET_STATS: dict = {
         "total_samples": 1000,
