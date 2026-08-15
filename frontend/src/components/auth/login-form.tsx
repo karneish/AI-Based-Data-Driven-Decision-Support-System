@@ -10,8 +10,10 @@ import { Button, Card, Field } from "@/components/ui";
 import { LogoMark } from "@/components/layout/logo";
 
 const DEMO_ACCOUNTS = [
-  { label: "Advisor", username: "admin", password: "admin123" },
-  { label: "Student", username: "karneish", password: "pass123" },
+  { label: "Student", username: "student", password: "student123" },
+  { label: "Faculty", username: "faculty", password: "faculty123" },
+  { label: "Admin", username: "admin", password: "admin123" },
+  { label: "Advisor", username: "advisor", password: "advisor123" },
 ]
 
 export function LoginForm() {
@@ -80,7 +82,7 @@ export function LoginForm() {
             <Field
               label="Username"
               id="username"
-              placeholder="e.g. karneish"
+              placeholder="e.g. student"
               autoComplete="username"
               icon={<UserRound className="h-4 w-4" />}
               value={username}
