@@ -28,10 +28,10 @@ import {
   BenchmarkChart,
   FeatureList,
   Gauge,
-  ModelBars,
   RadarPanel,
   RiskTierScale,
 } from "@/components/charts";
+import { ModelLeaderboard } from "@/components/report/model-leaderboard";
 
 export function ReportSkeleton() {
   return (
@@ -272,12 +272,17 @@ export function ReportView({ result }: { result: AnalysisResult }) {
 
         <Card>
           <CardHeader
-            title="Model agreement"
-            subtitle={`Every model's success probability vs. ${thresholdPct.toFixed(1)}% threshold`}
+            title="Model ensemble analysis"
+            subtitle={`All five models scored against the ${thresholdPct.toFixed(1)}% threshold`}
             icon={<BrainCircuit className="h-4 w-4" />}
+            action={<Badge tone="primary">Best: {result.all_model_probs.reduce((a, b) => (b.probability > a.probability ? b : a)).model}</Badge>}
           />
           <div className="p-5">
-            <ModelBars probs={result.all_model_probs} threshold={thresholdPct} />
+            <ModelLeaderboard
+              probs={result.all_model_probs}
+              threshold={thresholdPct}
+              selectedModel={result.selected_model}
+            />
           </div>
         </Card>
       </div>

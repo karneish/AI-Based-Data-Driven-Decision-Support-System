@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { SlidersHorizontal, Zap } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
+import { ZoneLabel } from "@/components/layout/zone-label";
 import { StudentForm } from "@/components/forms/student-form";
 import { ReportSkeleton, ReportView } from "@/components/report/report-view";
-import { Card, CardHeader, EmptyState } from "@/components/ui";
+import { VerdictStrip } from "@/components/report/verdict-strip";
+import { Card, CardHeader, EmptyState, Skeleton } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import type { AnalysisResult } from "@/types";
 
@@ -21,7 +23,7 @@ export default function SimulatePage() {
       <PageHeader
         kicker="What-if analysis"
         title="Outcome Simulator"
-        subtitle="Drag any indicator and watch the ensemble verdict recompute in real time — find the levers that move a student into the stable zone."
+        subtitle="Drag any indicator and watch the ensemble verdict recompute live — find the levers that move a student into the stable zone."
         icon={<SlidersHorizontal className="h-5 w-5" />}
       >
         <span
@@ -50,12 +52,25 @@ export default function SimulatePage() {
         </span>
       </PageHeader>
 
-      <div className="relative grid items-start gap-5 xl:grid-cols-[380px_1fr]">
+      {loading || result ? (
+        <div className="mb-6">
+          {loading ? (
+            <div className="overflow-hidden rounded-3xl">
+              <Skeleton className="h-44" />
+            </div>
+          ) : result ? (
+            <VerdictStrip result={result} />
+          ) : null}
+        </div>
+      ) : null}
+
+      <div className="relative grid items-start gap-6 xl:grid-cols-[380px_1fr]">
         <div className="xl:sticky xl:top-24">
+          <ZoneLabel index="01" title="Simulation controls" hint="Drag to change" />
           <Card className="overflow-hidden">
             <div className="h-1 bg-gradient-to-r from-teal-400 to-emerald-500" />
             <CardHeader
-              title="Simulation controls"
+              title="What-if controls"
               subtitle="Adjust indicators — results follow instantly"
               icon={<Zap className="h-4 w-4" />}
             />
@@ -71,6 +86,7 @@ export default function SimulatePage() {
         </div>
 
         <div className="min-w-0">
+          <ZoneLabel index="02" title="Live results" hint="Recomputes on every change" />
           {loading ? (
             <ReportSkeleton />
           ) : result ? (
@@ -80,7 +96,7 @@ export default function SimulatePage() {
               <EmptyState
                 icon={<SlidersHorizontal className="h-6 w-6" />}
                 title="Move a slider to simulate"
-                body="The report updates live as you change study hours, attendance, GPA or any other indicator — try finding the combination that pushes a student into the stable zone."
+                body="Drag any control in Zone 01 and the live verdict appears instantly — try finding the combination that pushes a student into the stable zone."
               />
             </Card>
           )}

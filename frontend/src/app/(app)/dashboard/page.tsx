@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ClipboardList, Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
+import { ZoneLabel } from "@/components/layout/zone-label";
 import { StudentForm } from "@/components/forms/student-form";
 import { ReportSkeleton, ReportView } from "@/components/report/report-view";
 import { Card, CardHeader, EmptyState } from "@/components/ui";
@@ -20,7 +21,7 @@ export default function DashboardPage() {
       <PageHeader
         kicker="Decision support"
         title="Student Analysis"
-        subtitle="Enter the student's academic indicators and get a complete ensemble report — risk classification, model agreement and counterfactual recommendations."
+        subtitle="Enter the student's academic indicators and get a complete ensemble dashboard — every model scored, risk classified and counterfactual recommendations ranked."
         icon={<ClipboardList className="h-5 w-5" />}
       >
         <span className="hidden items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/25 sm:inline-flex">
@@ -28,8 +29,9 @@ export default function DashboardPage() {
         </span>
       </PageHeader>
 
-      <div className="relative grid items-start gap-5 xl:grid-cols-[380px_1fr]">
+      <div className="relative grid items-start gap-6 xl:grid-cols-[380px_1fr]">
         <div className="xl:sticky xl:top-24">
+          <ZoneLabel index="01" title="Student input" hint="Analyze a profile" />
           <Card className="overflow-hidden">
             <div className="h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
             <CardHeader
@@ -48,6 +50,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="min-w-0">
+          <ZoneLabel index="02" title="Decision report" hint="Ensemble analysis dashboard" />
           {loading ? (
             <ReportSkeleton />
           ) : result ? (
@@ -57,7 +60,7 @@ export default function DashboardPage() {
               <EmptyState
                 icon={<ClipboardList className="h-6 w-6" />}
                 title="No analysis yet"
-                body="Fill in the student profile on the left and run the analysis to see a complete decision report with risk classification, model agreement and counterfactual recommendations."
+                body="Fill in the student profile in Zone 01 and run the analysis to see the ensemble dashboard — all five models scored, risk classified and counterfactual recommendations ranked."
               />
             </Card>
           )}
