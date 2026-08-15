@@ -2,7 +2,13 @@
   "services": {
     "backend": {
       "root": "backend",
-      "entrypoint": "app/main.py"
+      "framework": "fastapi",
+      "entrypoint": "app.main:app",
+      "functions": {
+        "app/main.py": {
+          "maxDuration": 60
+        }
+      }
     }
   }
 }
