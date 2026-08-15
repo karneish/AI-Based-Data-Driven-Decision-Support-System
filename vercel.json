@@ -10,5 +10,14 @@
         }
       }
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": {
+        "type": "service",
+        "service": "backend"
+      }
+    }
+  ]
 }
