@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}{% block page_title_block %}{% endblock %}{% endblock %}
+
+{% block content %}
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="logo" href="/dashboard">
+      <div class="logo-mark">D</div>
+      <div>
+        <div class="logo-name">DSS-MIP</div>
+        <div class="logo-sub">Academic AI</div>
+      </div>
+    </a>
+
+    <div class="nav-section">Main</div>
+    <a class="nav-link {{ 'active' if active == 'dashboard' }}" href="/dashboard">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 13h8V3H3v10Zm0 8h8v-6H3v6Zm10 0h8V11h-8v10Zm0-18v6h8V3h-8Z"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-link {{ 'active' if active == 'simulate' }}" href="/simulate">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 4H3v16h18V4ZM7 15v-6m5 6V9m5 6v-3"/></svg>
+      What-If Simulator
+    </a>
+    <a class="nav-link {{ 'active' if active == 'models' }}" href="/models">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5m6 14V9m6 10V3m6 16H2"/></svg>
+      Model Comparison
+    </a>
+
+    <div class="sidebar-foot">
+      <div class="user-chip">
+        <div class="user-avatar">{{ user.name[0]|upper }}</div>
+        <div>
+          <div class="user-name">{{ user.name }}</div>
+          <div class="user-role">{{ user.role }}</div>
+        </div>
+      </div>
+      <a class="nav-link" href="/logout">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14 5-5-5-5m5 5H9"/></svg>
+        Sign out
+      </a>
+    </div>
+  </aside>
+
+  <div class="scrim" id="scrim" onclick="closeSidebar()"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="flex items-center gap-3">
+        <button class="icon-btn burger" onclick="toggleSidebar()" aria-label="Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <div class="topbar-title">{% block page_title %}{% endblock %}</div>
+      </div>
+      <span class="badge badge-green tiny">● 5 models loaded</span>
+    </header>
+
+    <div class="content">
+      {% block page %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('scrim').classList.toggle('show');
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('scrim').classList.remove('show');
+  }
+</script>
+{% endblock %}

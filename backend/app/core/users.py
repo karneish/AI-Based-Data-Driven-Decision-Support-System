@@ -16,3 +16,14 @@ def authenticate(username: str, password: str) -> dict | None:
         "role": user["role"],
         "username": username,
     }
+
+
+def get_user(username: str) -> dict | None:
+    user = USERS.get(username)
+    if not user:
+        return None
+    return {
+        "name": user["name"],
+        "role": user["role"],
+        "username": username,
+    }

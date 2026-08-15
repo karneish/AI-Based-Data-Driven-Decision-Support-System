@@ -1,16 +1,15 @@
 # AI-DSS: AI-Based Data-Driven Decision Support System
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.109+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![React 18](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.2-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Scikit-learn](https://img.shields.io/badge/scikit--learn-1.3-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Jinja2](https://img.shields.io/badge/Jinja2-3.1+-B41717?logo=jinja&logoColor=white)](https://jinja.palletsprojects.com/)
+[![Scikit-learn](https://img.shields.io/badge/scikit--learn-1.5+-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![Chart.js](https://img.shields.io/badge/Chart.js-4.4-FF6384?logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A full-stack, production-grade Decision Support System that evaluates student academic stability using machine learning, interactive visualisations, and real-time what-if simulation.
+A full-stack, production-grade Decision Support System that evaluates student academic stability using machine learning, interactive visualisations, and real-time what-if simulation — served entirely by a **single FastAPI + Jinja2 Python process** (no Node.js build step).
 
-Built as an academic mini-project, this system demonstrates the integration of **logistic regression**, **composite scoring (ASI)**, and an **interactive React dashboard** into a cohesive analytics platform.
+Built as an academic mini-project, this system demonstrates the integration of **five ML classifiers**, **composite scoring (ASI)**, **counterfactual recommendations**, and a **dark-glassmorphism server-rendered dashboard** into a cohesive analytics platform.
 
 ---
 
@@ -21,13 +20,9 @@ Built as an academic mini-project, this system demonstrates the integration of *
 - [System Architecture](#system-architecture)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Backend Setup](#1-backend-setup)
-  - [Frontend Setup](#2-frontend-setup)
 - [API Reference](#api-reference)
 - [ML Model & ASI Formula](#ml-model--asi-formula)
 - [Demo Credentials](#demo-credentials)
-- [Screenshots](#screenshots)
 - [Production Build](#production-build)
 - [Contributing](#contributing)
 - [License](#license)
@@ -36,16 +31,16 @@ Built as an academic mini-project, this system demonstrates the integration of *
 
 ## Key Features
 
-- **Landing Page** — Hero section, feature cards, and interactive system architecture walkthrough
-- **Authentication** — Login system with personalised name-reflected welcome greeting
+- **Landing Page** — Hero section, feature cards, and system overview
+- **Authentication** — Signed-cookie sessions (`itsdangerous`) with demo quick-fill
 - **Student Input Form** — Slider-based form for all 8 academic indicators with preset profile dropdown
-- **ML-Powered Analysis** — Logistic Regression model via FastAPI for real-time predictions
-- **Academic Stability Index (ASI)** — Weighted composite metric combining ML probability, attendance, and study habits
+- **ML-Powered Analysis** — 5-model ensemble (soft vote) via FastAPI for real-time predictions
+- **Academic Stability Index (ASI)** — Data-calibrated weighted composite of ML probability, attendance, and study habits
 - **Risk Classification** — Three-tier risk categorisation: Stable, Monitor Closely, Intervention Required
-- **Interactive Visualisations** — Radar (spider) chart, feature importance bar chart, score-vs-benchmark column chart, and ASI gauge
-- **AI-Generated Reports** — Detailed overall report with ranked recommendations and impact ratings
+- **Interactive Visualisations** — Radar (spider) chart, feature importance bar chart, score-vs-benchmark column chart, and ASI gauge (Chart.js)
+- **AI-Generated Reports** — Detailed overall report with ranked recommendations, impact ratings, and printable PDF export
 - **What-If Simulator** — Real-time re-analysis with adjusted parameters for scenario exploration
-- **Model Comparison** — Side-by-side evaluation of multiple ML algorithms (Logistic Regression, Random Forest, SVM, etc.)
+- **Model Comparison** — Side-by-side evaluation of five ML algorithms with confusion matrices
 
 ---
 
@@ -53,45 +48,33 @@ Built as an academic mini-project, this system demonstrates the integration of *
 
 | Layer | Technology | Purpose |
 |---|---|---|
-| **Frontend** | React 18 + TypeScript + Vite | Component-based UI framework |
-| **Styling** | Tailwind CSS | Utility-first responsive design |
-| **Charts** | Recharts | Radar, Bar, Column visualisations |
-| **Animations** | Framer Motion | Page and component transitions |
-| **Backend** | Python 3 + FastAPI | REST API server |
-| **ML Model** | scikit-learn | Logistic Regression classifier |
+| **Frontend** | Jinja2 + HTML/CSS/JS | Server-rendered pages (no build step) |
+| **Styling** | Custom CSS | Dark glassmorphism design system |
+| **Charts** | Chart.js (CDN) | Radar, bar, gauge visualisations |
+| **Sessions** | itsdangerous | Signed login cookies |
+| **Backend** | Python 3 + FastAPI | Web pages + REST API |
+| **ML Model** | scikit-learn | 5 classifiers + soft-vote ensemble |
 | **Data Processing** | Pandas + NumPy | Dataset handling and feature engineering |
-| **HTTP Client** | Axios | Frontend-to-backend communication |
+| **HTTP Client** | fetch API | Browser-to-API communication |
 
 ---
 
 ## System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        CLIENT (React + Vite)                       │
-│  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌──────────────────┐ │
-│  │ Landing  │  │  Login   │  │ Dashboard  │  │   Simulator      │ │
-│  │  Page    │  │  Page    │  │  (Main)    │  │   Panel          │ │
-│  └──────────┘  └──────────┘  └─────┬─────┘  └──────────────────┘ │
-│                                     │                               │
-│                        ┌────────────┴────────────┐                 │
-│                        │   Recharts / Framer      │                 │
-│                        └─────────────────────────┘                 │
-└──────────────────────────────────┬──────────────────────────────────┘
-                                   │ HTTP (Axios)
+┌──────────────────────────────────────────────────────────────────────┐
+│                      CLIENT (Browser)                                │
+│  Landing · Login · Dashboard · Simulator · Model Comparison          │
+│            Jinja2 HTML + CSS + Chart.js                              │
+└──────────────────────────────────┬───────────────────────────────────┘
+                                   │ HTTP
                                    ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                      SERVER (FastAPI + Uvicorn)                    │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────┐ │
-│  │  /api/login  │  │ /api/analyze │  │      /api/simulate       │ │
-│  │ Authenticate │  │ ML Analysis  │  │   What-If Simulation     │ │
-│  └──────────────┘  └──────┬───────┘  └──────────────────────────┘ │
-│                            │                                        │
-│                   ┌────────▼────────┐                               │
-│                   │ Logistic Reg.   │                               │
-│                   │ (scikit-learn)  │                               │
-│                   └─────────────────┘                               │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│                SERVER (FastAPI + Uvicorn — one process)             │
+│  Page routes (/ , /login, /dashboard, /simulate, /models, /static)  │
+│  JSON API     (/api/analyze, /api/simulate, /api/model-comparison…) │
+│  ML engine    (5 models trained at startup on student_data.csv)      │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Data Flow
@@ -107,47 +90,25 @@ User Input → Preprocessing → ML Prediction → ASI Computation
 
 ```
 dss-mip/
-├── backend/                       # Python FastAPI service
+├── backend/
 │   ├── app/
-│   │   ├── main.py                # FastAPI entry point (uvicorn app.main:app)
+│   │   ├── main.py                # FastAPI entry (pages + API + sessions)
 │   │   ├── config.py              # Centralised settings & thresholds
-│   │   ├── api/routes/            # HTTP routes (auth, analysis, models, health)
+│   │   ├── api/routes/            # HTTP JSON API (auth, analysis, models, health)
 │   │   ├── schemas/               # Pydantic DTOs
 │   │   ├── core/                  # Domain logic (ASI, risk, recommendations)
 │   │   ├── services/              # Business orchestration
 │   │   ├── models/                # ML training & model registry
+│   │   ├── templates/             # Jinja2 pages
+│   │   ├── static/                # CSS / JS / favicon
 │   │   └── data/                  # Datasets (student_data.csv)
 │   ├── tests/                     # Pytest API tests
 │   ├── requirements.txt           # Runtime dependencies
 │   └── requirements-dev.txt       # Test dependencies
-├── frontend/                      # React + TypeScript + Vite SPA
-│   ├── src/
-│   │   ├── app/App.tsx            # Root component
-│   │   ├── features/              # Feature-first modules
-│   │   │   ├── home/              #   Landing page + overview
-│   │   │   ├── auth/              #   Login
-│   │   │   ├── analysis/          #   Input form + report
-│   │   │   ├── simulation/        #   What-if simulator
-│   │   │   └── models/            #   Model comparison
-│   │   ├── layouts/Dashboard.tsx  # Authenticated app shell
-│   │   ├── components/            # Shared UI, charts & layout chrome
-│   │   ├── hooks/                 # Reusable React hooks
-│   │   ├── constants/             # Domain constants & presets
-│   │   ├── lib/api.ts             # Axios API client
-│   │   ├── types/                 # TypeScript interfaces
-│   │   ├── styles/                # Global styles + Tailwind
-│   │   └── main.tsx               # Application bootstrap
-│   ├── public/
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.ts
-│   ├── tailwind.config.js
-│   ├── tsconfig.json
-│   └── postcss.config.js
 ├── docs/                          # Architecture, API & development docs
 ├── scripts/                       # start-dev.bat / start-dev.sh
 ├── .github/workflows/ci.yml       # CI pipeline
-├── Dockerfile                    # Single container: builds frontend + serves API & SPA
+├── Dockerfile                    # Single Python container
 ├── docker-compose.yml             # Local container orchestration
 ├── .env.example                   # Environment template
 ├── LICENSE                        # MIT license
@@ -163,12 +124,10 @@ dss-mip/
 ### Prerequisites
 
 - **Python 3.10+** — [Download](https://www.python.org/downloads/)
-- **Node.js 18+** — [Download](https://nodejs.org/)
-- **npm 9+** or **yarn** — Package manager
 
-> **Quick start:** run `scripts\start-dev.bat` (Windows) or `./scripts/start-dev.sh` (Unix/macOS) to launch both servers automatically.
+> **Quick start:** run `scripts\start-dev.bat` (Windows) or `./scripts/start-dev.sh` (Unix/macOS) to launch the server automatically.
 
-### 1. Backend Setup
+### Setup
 
 ```bash
 cd backend
@@ -181,52 +140,40 @@ source venv/bin/activate    # Linux/Mac
 # Install dependencies
 pip install -r requirements.txt
 
-# Start the FastAPI server
+# Start the server (trains models at startup)
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-The backend will be available at: **http://localhost:8000**
+The app is available at: **http://localhost:8000**
 
 Interactive API documentation: **http://localhost:8000/docs**
-
-### 2. Frontend Setup
-
-```bash
-cd frontend
-
-# Install dependencies
-npm install --legacy-peer-deps
-
-# Start the development server
-npm run dev
-```
-
-The frontend will be available at: **http://localhost:5173**
 
 ---
 
 ## API Reference
 
-| Method | Endpoint | Description | Request Body |
+| Method | Endpoint | Description | Auth |
 |---|---|---|---|
-| `GET` | `/health` | Server health check | — |
-| `POST` | `/api/login` | User authentication | `{ username, password }` |
-| `POST` | `/api/analyze` | Run ML analysis | `{ attendance, study_hours, ... }` |
-| `POST` | `/api/simulate` | What-if simulation | `{ adjustments, base_data }` |
-| `GET` | `/api/models/compare` | Compare multiple ML models | — |
+| `GET` | `/health` | Server health check + loaded models | — |
+| `POST` | `/api/login` | User authentication (JSON) | — |
+| `POST` | `/api/analyze` | Run full ML analysis on a student profile | — |
+| `POST` | `/api/simulate` | What-if simulation (same engine as analyze) | — |
+| `GET` | `/api/model-comparison` | Evaluation metrics for all trained models | — |
+| `GET` | `/api/feature-importance` | Random Forest feature importances | — |
 
 ### Example: `/api/analyze`
 
 ```json
 {
-  "attendance": 85,
-  "study_hours": 6,
-  "previous_grade": 78,
-  "extra_curricular": 1,
-  "parent_education": 2,
-  "assignments_completed": 90,
-  "sleep_hours": 7,
-  "motivation_level": 4
+  "name": "Arjun Sharma",
+  "previous_gpa": 6.5,
+  "internal_score": 60,
+  "study_hours": 9,
+  "attendance": 72,
+  "assignment_rate": 75,
+  "parental_education": 2,
+  "internet_access": 1,
+  "extracurricular": 0
 }
 ```
 
@@ -234,17 +181,19 @@ The frontend will be available at: **http://localhost:5173**
 
 ```json
 {
-  "prediction": "Stable",
-  "probability": 0.87,
-  "asi_score": 82.4,
-  "recommendations": ["Maintain current study habits", "Consider advanced coursework"],
-  "feature_importance": {
-    "attendance": 0.31,
-    "study_hours": 0.22,
-    "previous_grade": 0.18
-  }
+  "ml_probability": 61.2,
+  "ensemble_probability": 58.4,
+  "confidence": 80.0,
+  "asi": 57.8,
+  "risk_category": "Monitor Closely",
+  "predicted_class": "Strong Performer",
+  "recommendations": [{ "action": "Improve Attendance", "probability_gain": 24.5 }],
+  "feature_importance": [{ "feature": "Attendance", "importance": 0.31 }],
+  "all_model_probs": [{ "model": "Logistic Regression", "probability": 61.2 }]
 }
 ```
+
+> Full schemas and field notes: [`docs/api.md`](docs/api.md)
 
 ---
 
@@ -252,12 +201,12 @@ The frontend will be available at: **http://localhost:5173**
 
 ### Academic Stability Index (ASI)
 
-The ASI is a weighted composite metric that combines the ML prediction probability with behavioural indicators. The weights are **data-calibrated at startup** from logistic-regression coefficients on the training set (current dataset):
+The ASI is a weighted composite metric that combines the ML prediction probability with behavioural indicators. Weights are **data-calibrated at startup** from the training set:
 
 ```
-ASI = (ML Probability × 0.96)
-    + (Attendance Score × 0.01)
-    + (Study Hours Score × 0.03)
+ASI = (ML Probability × 0.50)
+    + (Attendance Score × 0.30)
+    + (Study Hours Score × 0.20)
 ```
 
 ### Risk Thresholds
@@ -268,13 +217,16 @@ ASI = (ML Probability × 0.96)
 | 🟡 **Monitor Closely** | 45% ≤ ASI < 70% | Review and provide guidance |
 | 🔴 **Intervention Required** | ASI < 45% | Immediate academic intervention |
 
+> Bands and weights are re-learned from the training data at startup, so exact cutoffs may vary slightly by environment.
+
 ### Model Details
 
-- **Algorithm:** Logistic Regression (scikit-learn)
+- **Algorithms:** Logistic Regression, Decision Tree, Random Forest, K-Nearest Neighbors, Gradient Boosting
+- **Ensemble:** soft-vote mean of all five model probabilities
 - **Features:** 8 academic and behavioural indicators
-- **Training Data:** 1,000+ synthetic student records
-- **Evaluation Metrics:** Accuracy, Precision, Recall, F1-Score
-- **Additional Models (Comparison):** Random Forest, SVM, Decision Tree, KNN
+- **Training Data:** 1,000 synthetic student records (800 train / 200 test)
+- **Calibration:** class cutoff via Youden's J (ROC) on held-out data
+- **Counterfactual recommendations:** each actionable feature is simulated against the ensemble; probability gain ranks the top 4
 
 ---
 
@@ -289,33 +241,16 @@ ASI = (ML Probability × 0.96)
 
 ---
 
-## Screenshots
-
-> *[Screenshots can be added here by placing image files in an `assets/screenshots/` directory]*
-
-| Page | Description |
-|---|---|
-| **Landing Page** | Hero section with animated feature cards and architecture walkthrough |
-| **Login Page** | Clean authentication form with role-based welcome message |
-| **Dashboard** | Sidebar navigation with interactive input form |
-| **Analysis Report** | Full report with radar chart, bar charts, and ASI gauge |
-| **Simulator** | Real-time what-if scenario adjustment panel |
-| **Model Comparison** | Side-by-side algorithm performance metrics |
-
----
-
 ## Production Build
 
-The FastAPI backend serves both the API (`/api/*`) and the built React application (`/`), so a single Python service hosts the entire app. The containerised `Dockerfile` builds the frontend automatically during image build.
-
-To run it locally as a single service:
+The FastAPI backend serves both the API (`/api/*`) and the server-rendered web UI (`/`), so a single Python service hosts the entire app. To run it locally as a single service:
 
 ```bash
 docker compose up -d
 # App + API docs: http://localhost:8000
 ```
 
-Or run the backend directly (serves the SPA only if `backend/app/static/` exists):
+Or run the backend directly:
 
 ```bash
 cd backend
@@ -324,7 +259,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 > Use a **single worker** — the models are trained in memory at startup and shared within the process.
 
-For containerised deployment, see [`docs/development.md`](docs/development.md) and the included `docker-compose.yml`.
+Deployment targets: **Render** (Docker web service) and **Vercel** (single FastAPI service, see root `vercel.json`). See [`docs/development.md`](docs/development.md) for details.
 
 ---
 
@@ -350,10 +285,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 - Built as a Mini Project for academic submission
 - [FastAPI](https://fastapi.tiangolo.com/) — Modern Python web framework
-- [React](https://reactjs.org/) — UI component library
-- [Recharts](https://recharts.org/) — Composable charting library
 - [scikit-learn](https://scikit-learn.org/) — Machine learning toolkit
-- [Tailwind CSS](https://tailwindcss.com/) — Utility-first CSS framework
+- [Chart.js](https://www.chartjs.org/) — Composable charting library
+- [Jinja2](https://jinja.palletsprojects.com/) — Server-side templating engine
 
 ---
 

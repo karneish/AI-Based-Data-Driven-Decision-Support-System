@@ -1,0 +1,71 @@
+{% extends "app.html" %}
+
+{% block title %}Simulator{% endblock %}
+{% block page_title_block %}Simulator{% endblock %}
+{% block page_title %}What-If Simulator{% endblock %}
+
+{% block page %}
+<div class="wrap" style="width:min(1080px, 100%)">
+
+  <div class="mb-5">
+    <span class="section-tag">What-If Simulation</span>
+    <h2 class="title-lg" style="margin-bottom:6px">Interactive Scenario Simulator</h2>
+    <p class="small muted">Adjust the sliders and run the simulation to instantly see how changes in academic behaviour shift the ASI score and risk level.</p>
+  </div>
+
+  <div class="grid" style="grid-template-columns: 440px 1fr; gap: 24px; align-items: start;">
+    <div class="glass card">
+      <div class="upcase muted mb-4" style="letter-spacing:.12em">Adjust Variables</div>
+
+      <div class="slider-row">
+        <div class="slider-head"><span class="lbl">Study Hours / Week</span><span class="val" id="v-study">8.0 hrs</span></div>
+        <input type="range" id="study_hours" min="0" max="20" step="0.5" value="8" oninput="sliderChanged(this)">
+      </div>
+      <div class="slider-row">
+        <div class="slider-head"><span class="lbl">Attendance %</span><span class="val" id="v-attendance">70%</span></div>
+        <input type="range" id="attendance" min="0" max="100" step="1" value="70" oninput="sliderChanged(this)">
+      </div>
+      <div class="slider-row">
+        <div class="slider-head"><span class="lbl">Assignment Rate %</span><span class="val" id="v-assignment">75%</span></div>
+        <input type="range" id="assignment_rate" min="0" max="100" step="1" value="75" oninput="sliderChanged(this)">
+      </div>
+      <div class="slider-row">
+        <div class="slider-head"><span class="lbl">Internal Score</span><span class="val" id="v-internal">60%</span></div>
+        <input type="range" id="internal_score" min="0" max="100" step="1" value="60" oninput="sliderChanged(this)">
+      </div>
+      <div class="slider-row">
+        <div class="slider-head"><span class="lbl">Previous GPA</span><span class="val" id="v-gpa">6.5 / 10</span></div>
+        <input type="range" id="previous_gpa" min="0" max="10" step="0.1" value="6.5" oninput="sliderChanged(this)">
+      </div>
+
+      <div class="field">
+        <label class="label">Extracurricular</label>
+        <div class="opt-group" id="extracurricular" data-value="0">
+          <button type="button" class="opt" data-val="0">No</button>
+          <button type="button" class="opt on-green" data-val="1">Yes</button>
+        </div>
+      </div>
+
+      <div id="simError"></div>
+      <button class="btn btn-primary btn-block" id="simBtn" style="padding:14px" onclick="runSimulation()">
+        <span id="simLabel">Run Simulation</span>
+      </button>
+    </div>
+
+    <div class="flex-col gap-4">
+      <div class="glass card flex-center" id="simEmpty" style="min-height:300px;flex-direction:column;gap:14px">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#1e2d4a" stroke-width="1.6"><path d="M21 4H3v16h18V4ZM7 15v-6m5 6V9m5 6v-3"/></svg>
+        <div class="center">
+          <p style="font-weight:600">Adjust and Simulate</p>
+          <p class="small faint mt-2">Set the sliders on the left and click <strong style="color:var(--brand)">Run Simulation</strong> to see live results.</p>
+        </div>
+      </div>
+      <div id="simResult" class="hidden"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/simulate.js"></script>
+{% endblock %}

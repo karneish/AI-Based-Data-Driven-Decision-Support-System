@@ -2,12 +2,11 @@
 
 ## Prerequisites
 
-- **Python 3.10+** (backend)
-- **Node.js 18+** and **npm 9+** (frontend)
+- **Python 3.10+** — the app runs entirely on a single FastAPI process (API + server-rendered UI).
 
 ## Quick start
 
-Run both services from the project root using the provided scripts:
+Run the single server from the project root using the provided scripts:
 
 ```bash
 # Windows
@@ -17,7 +16,7 @@ scripts\start-dev.bat
 ./scripts/start-dev.sh
 ```
 
-### Manual backend setup
+### Manual setup
 
 ```bash
 cd backend
@@ -29,18 +28,10 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-- API: http://localhost:8000
+- App: http://localhost:8000
 - Swagger docs: http://localhost:8000/docs
 
-### Manual frontend setup
-
-```bash
-cd frontend
-npm install --legacy-peer-deps
-npm run dev
-```
-
-- App: http://localhost:5173 (dev proxy forwards `/api` to `:8000`)
+Models are trained once at startup (a few seconds); you'll see the trained-model log before the server accepts requests.
 
 ## Environment configuration
 
@@ -48,13 +39,12 @@ Copy the relevant template to `.env` and adjust values if needed:
 
 | File | Purpose |
 |---|---|
-| `backend/.env.example` | Backend settings (CORS origins, app metadata) |
-| `frontend/.env.example` | `VITE_API_BASE_URL` for direct API calls |
+| `backend/.env.example` | Backend settings (CORS origins, app metadata, `SESSION_SECRET`) |
 | `.env.example` | Root-level compose ports |
 
-## Testing
+> Set a strong `SESSION_SECRET` for production — it signs the login cookie.
 
-### Backend
+## Testing
 
 ```bash
 cd backend
@@ -62,17 +52,9 @@ pip install -r requirements-dev.txt
 pytest tests -v
 ```
 
-### Frontend
-
-```bash
-cd frontend
-npm run typecheck
-npm run build
-```
-
 ## Production build
 
-The FastAPI backend serves both the API (`/api/*`) and the built React SPA (`/`). In Docker, the multi-stage `Dockerfile` builds the frontend automatically:
+The FastAPI backend serves both the API (`/api/*`) and the server-rendered web UI (`/`). The `Dockerfile` is a single Python stage:
 
 ```bash
 docker compose up --build
@@ -80,22 +62,25 @@ docker compose up --build
 
 - App + API docs: http://localhost:8000
 
-To build the frontend manually (e.g. to test static serving without Docker):
+To run it locally without Docker:
 
 ```bash
-cd frontend
-npm run build          # outputs to frontend/dist
-# copy frontend/dist/* into backend/app/static/
-cd ../backend
+cd backend
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
+
+> Use a **single worker** — the models are trained in memory at startup and shared within the process.
+
+## Deployment
+
+- **Render** — single web service from the repo root; uses the `Dockerfile`.
+- **Vercel** — single FastAPI service configured in the root `vercel.json` (`root: "backend"`, `entrypoint: "app/main.py"`).
 
 ## CI
 
 GitHub Actions (`.github/workflows/ci.yml`) runs on push/PR to `main`/`develop`:
 
 1. **Backend job** — installs `requirements-dev.txt`, runs `pytest backend/tests`.
-2. **Frontend job** — installs with `npm ci --legacy-peer-deps`, runs `npm run typecheck` and `npm run build`.
 
 ## Contributing
 
