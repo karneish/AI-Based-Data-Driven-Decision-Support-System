@@ -147,7 +147,7 @@ dss-mip/
 ├── docs/                          # Architecture, API & development docs
 ├── scripts/                       # start-dev.bat / start-dev.sh
 ├── .github/workflows/ci.yml       # CI pipeline
-├── Dockerfile.backend             # Single container: builds frontend + serves API & SPA
+├── Dockerfile                    # Single container: builds frontend + serves API & SPA
 ├── docker-compose.yml             # Local container orchestration
 ├── .env.example                   # Environment template
 ├── LICENSE                        # MIT license
@@ -306,7 +306,7 @@ ASI = (ML Probability × 0.96)
 
 ## Production Build
 
-The FastAPI backend serves both the API (`/api/*`) and the built React application (`/`), so a single Python service hosts the entire app. The containerised `Dockerfile.backend` builds the frontend automatically during image build.
+The FastAPI backend serves both the API (`/api/*`) and the built React application (`/`), so a single Python service hosts the entire app. The containerised `Dockerfile` builds the frontend automatically during image build.
 
 To run it locally as a single service:
 

@@ -110,7 +110,7 @@ dss-mip/
 │   ├── start-dev.bat                  # Windows dev startup (backend + frontend)
 │   └── start-dev.sh                   # Unix/macOS dev startup
 │
-├── Dockerfile.backend                 # Single container: builds frontend, serves API + SPA
+├── Dockerfile                       # Single container: builds frontend, serves API + SPA
 ├── docker-compose.yml                 # Local container orchestration
 ├── .dockerignore                      # Docker build exclusions
 ├── .env.example                       # Root environment template

@@ -73,7 +73,7 @@ Feature-first organisation: every user-facing capability (`auth`, `analysis`, `s
 | Mode | Description |
 |---|---|
 | **Development** | Vite dev server on `:5173` proxies `/api` to Uvicorn on `:8000` |
-| **Single service (Docker)** | `Dockerfile.backend` multi-stage build compiles the SPA and copies it into `backend/app/static`; FastAPI serves `/api/*` and the SPA (with client-route fallback to `index.html`) from one Python process |
+| **Single service (Docker)** | Multi-stage `Dockerfile` compiles the SPA and copies it into `backend/app/static`; FastAPI serves `/api/*` and the SPA (with client-route fallback to `index.html`) from one Python process |
 
 The app is fully containerised in one service — no nginx, no Vercel, no separate static host required.
 

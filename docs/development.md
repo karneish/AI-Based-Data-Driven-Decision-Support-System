@@ -72,7 +72,7 @@ npm run build
 
 ## Production build
 
-The FastAPI backend serves both the API (`/api/*`) and the built React SPA (`/`). In Docker, the multi-stage `Dockerfile.backend` builds the frontend automatically:
+The FastAPI backend serves both the API (`/api/*`) and the built React SPA (`/`). In Docker, the multi-stage `Dockerfile` builds the frontend automatically:
 
 ```bash
 docker compose up --build
