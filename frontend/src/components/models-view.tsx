@@ -177,7 +177,7 @@ export function ModelsView() {
 
       <Card className="border-t-4 border-t-primary">
         <div className="flex flex-col gap-4 p-5 md:flex-row md:items-center">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-violet-600 text-white shadow-sm shadow-primary/30">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-emerald-700 text-white shadow-sm shadow-primary/30">
             <Trophy className="h-5 w-5" />
           </div>
           <div className="flex-1">

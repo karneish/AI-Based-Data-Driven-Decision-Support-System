@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 import type { AnalysisResult, ModelMetrics } from "@/types";
 
 const CHART_COLORS = [
-  "rgb(var(--chart-indigo))",
-  "rgb(var(--chart-violet))",
-  "rgb(var(--chart-cyan))",
+  "rgb(var(--chart-forest))",
+  "rgb(var(--chart-pine))",
+  "rgb(var(--chart-teal))",
   "rgb(var(--chart-emerald))",
-  "rgb(var(--chart-amber))",
+  "rgb(var(--chart-gold))",
 ];
 
 export type MetricKey =
@@ -23,7 +23,7 @@ export function Gauge({
   value,
   size = 180,
   label,
-  color = "#4f46e5",
+  color = "#166534",
 }: {
   value: number
   size?: number
@@ -70,7 +70,7 @@ export function Gauge({
           dominantBaseline="central"
           className="tabular font-bold"
           fontSize={size * 0.2}
-          fill="#0f172a"
+          fill="#062414"
         >
           {Math.round(clamped)}
         </text>
@@ -161,14 +161,14 @@ export function RadarPanel({ data }: { data: Record<string, number> }) {
               cx={170 + 105 * Math.cos(rad)}
               cy={130 + 105 * Math.sin(rad)}
               r={3}
-              fill="#4f46e5"
+              fill="#166534"
             />
             <text
               x={170 + 125 * Math.cos(rad)}
               y={130 + 125 * Math.sin(rad) + 4}
               textAnchor="middle"
               fontSize={11}
-              fill="#475569"
+              fill="#324f3c"
               fontWeight={500}
             >
               {row.subject}
@@ -184,8 +184,8 @@ export function RadarPanel({ data }: { data: Record<string, number> }) {
             return `${170 + r * Math.cos(rad)},${130 + r * Math.sin(rad)}`
           })
           .join(" ")}
-        fill="rgba(79,70,229,0.16)"
-        stroke="#4f46e5"
+        fill="rgba(22,101,52,0.16)"
+        stroke="#166534"
         strokeWidth={2}
         strokeLinejoin="round"
       />
@@ -362,7 +362,7 @@ export function MetricsRadar({
               y={130 + 125 * Math.sin(rad) + 4}
               textAnchor="middle"
               fontSize={10.5}
-              fill="#475569"
+              fill="#324f3c"
               fontWeight={500}
             >
               {m.model.replace(" Gradient Boosting", " GB")}
@@ -378,8 +378,8 @@ export function MetricsRadar({
             return `${170 + r * Math.cos(rad)},${130 + r * Math.sin(rad)}`
           })
           .join(" ")}
-        fill="rgba(79,70,229,0.16)"
-        stroke="#4f46e5"
+        fill="rgba(22,101,52,0.16)"
+        stroke="#166534"
         strokeWidth={2}
         strokeLinejoin="round"
       />

@@ -117,7 +117,7 @@ export interface BadgeProps
     | "amber"
     | "red"
     | "cyan"
-    | "violet"
+    | "teal"
 }
 
 const badgeTones: Record<NonNullable<BadgeProps["tone"]>, string> = {
@@ -127,7 +127,7 @@ const badgeTones: Record<NonNullable<BadgeProps["tone"]>, string> = {
   amber: "bg-amber-50 text-amber-700 ring-amber-200",
   red: "bg-rose-50 text-rose-700 ring-rose-200",
   cyan: "bg-cyan-50 text-cyan-700 ring-cyan-200",
-  violet: "bg-violet-50 text-violet-700 ring-violet-200",
+  teal: "bg-teal-50 text-teal-700 ring-teal-200",
 }
 
 export function Badge({
@@ -225,7 +225,7 @@ export function RangeField({
   const pct = ((value - min) / (max - min)) * 100
   const accent =
     tone === "primary"
-      ? "accent-[#4f46e5]"
+      ? "accent-[#166534]"
       : tone === "emerald"
         ? "accent-[#059669]"
         : "accent-[#d97706]"
@@ -255,7 +255,7 @@ export function RangeField({
         )}
         style={{
           background: `linear-gradient(to right, ${
-            tone === "primary" ? "#4f46e5" : tone === "emerald" ? "#059669" : "#d97706"
+            tone === "primary" ? "#166534" : tone === "emerald" ? "#059669" : "#d97706"
           } ${pct}%, #e2e8f0 ${pct}%)`,
         }}
       />
@@ -342,7 +342,7 @@ export function StatCard({
   value: React.ReactNode
   sub?: React.ReactNode
   icon?: React.ReactNode
-  tone?: "primary" | "green" | "amber" | "red" | "cyan" | "violet"
+  tone?: "primary" | "green" | "amber" | "red" | "cyan" | "teal"
 }) {
   const tones: Record<string, string> = {
     primary: "bg-primary-soft text-primary",
@@ -350,7 +350,7 @@ export function StatCard({
     amber: "bg-amber-50 text-amber-600",
     red: "bg-rose-50 text-rose-600",
     cyan: "bg-cyan-50 text-cyan-600",
-    violet: "bg-violet-50 text-violet-600",
+    teal: "bg-teal-50 text-teal-600",
   }
   return (
     <Card className="p-4">

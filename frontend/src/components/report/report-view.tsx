@@ -75,7 +75,7 @@ export function ReportView({ result }: { result: AnalysisResult }) {
     value: React.ReactNode
     sub?: string
     icon?: React.ReactNode
-    tone: "primary" | "green" | "amber" | "red" | "cyan" | "violet"
+    tone: "primary" | "green" | "amber" | "red" | "cyan" | "teal"
   }> = [
     {
       label: "Success probability",
@@ -89,7 +89,7 @@ export function ReportView({ result }: { result: AnalysisResult }) {
       value: formatNumber(result.asi),
       sub: "Academic Success Index",
       icon: <GaugeIcon className="h-4 w-4" />,
-      tone: "violet" as const,
+      tone: "teal" as const,
     },
     {
       label: "Risk status",

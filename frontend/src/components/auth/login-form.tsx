@@ -52,35 +52,35 @@ export function LoginForm() {
 
   return (
     <div className="flex min-h-screen">
-      <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-[#0b1030] p-10 text-white lg:flex">
-        <div className="absolute inset-0 bg-grid opacity-40" />
-        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/30 blur-[120px]" />
-        <div className="absolute -bottom-40 -right-24 h-[28rem] w-[28rem] rounded-full bg-violet-600/25 blur-[130px]" />
+      <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden border-r border-line bg-gradient-to-br from-primary-soft via-primary-softer to-[#e6f4eb] p-10 lg:flex">
+        <div className="absolute inset-0 bg-grid opacity-50" />
+        <div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute -bottom-40 -right-24 h-[28rem] w-[28rem] rounded-full bg-emerald-200/40 blur-[130px]" />
         <div className="relative flex items-center gap-3">
           <LogoMark className="h-10 w-10" />
-          <span className="text-lg font-bold tracking-tight">
-            DSS<span className="text-indigo-400">-MIP</span>
+          <span className="text-lg font-bold tracking-tight text-ink">
+            DSS<span className="text-primary">-MIP</span>
           </span>
         </div>
         <div className="relative max-w-md">
-          <h2 className="text-3xl font-bold leading-tight">
+          <h2 className="text-3xl font-bold leading-tight text-ink">
             Data-driven decisions for{" "}
             <span className="text-gradient">every student.</span>
           </h2>
-          <p className="mt-4 text-sm leading-relaxed text-slate-300">
+          <p className="mt-4 text-sm leading-relaxed text-ink-soft">
             Predict success probability with an ensemble of five machine
             learning models, classify risk in real time and explore
             counterfactual recommendations — completely free, no database
             required.
           </p>
-          <ul className="mt-8 space-y-3 text-sm text-slate-300">
+          <ul className="mt-8 space-y-3 text-sm text-ink-soft">
             {[
               "Ensemble of 5 scikit-learn models trained in-memory",
               "Academic Success Index (ASI) risk classification",
               "What-if simulator with instant counterfactuals",
             ].map((item) => (
               <li key={item} className="flex items-center gap-3">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-400/20 text-[10px] text-emerald-300">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-[10px] text-emerald-700">
                   ✓
                 </span>
                 {item}
@@ -88,7 +88,7 @@ export function LoginForm() {
             ))}
           </ul>
         </div>
-        <p className="relative text-xs text-slate-500">
+        <p className="relative text-xs text-ink-muted">
           FastAPI · scikit-learn · Next.js · TypeScript
         </p>
       </div>

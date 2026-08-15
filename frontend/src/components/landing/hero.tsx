@@ -22,12 +22,12 @@ function Sparkline() {
     <svg viewBox="0 0 322 100" className="w-full">
       <defs>
         <linearGradient id="spark" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#4f46e5" />
-          <stop offset="1" stopColor="#0891b2" />
+          <stop offset="0" stopColor="#166534" />
+          <stop offset="1" stopColor="#0f766e" />
         </linearGradient>
       </defs>
       {[25, 50, 75].map((y) => (
-        <line key={y} x1="0" x2="322" y1={y} y2={y} stroke="#eef0f7" strokeWidth="1" />
+        <line key={y} x1="0" x2="322" y1={y} y2={y} stroke="#e8f0e9" strokeWidth="1" />
       ))}
       <path d={`${path} L 322 100 L 0 100 Z`} fill="url(#spark)" opacity="0.12" />
       <path
@@ -45,7 +45,7 @@ function Sparkline() {
           cy={y}
           r={i === points.length - 1 ? 4 : 2.5}
           fill="#fff"
-          stroke={i === points.length - 1 ? "#4f46e5" : "#4f46e5"}
+          stroke={i === points.length - 1 ? "#166534" : "#166534"}
           strokeWidth="2"
         />
       ))}
@@ -57,7 +57,7 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-grid [mask-image:linear-gradient(to_bottom,black,transparent_75%)]" />
-      <div className="absolute -top-40 left-1/2 h-[30rem] w-[60rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary/20 via-violet-500/15 to-cyan-500/20 blur-[130px]" />
+      <div className="absolute -top-40 left-1/2 h-[30rem] w-[60rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary/20 via-emerald-500/10 to-teal-500/15 blur-[130px]" />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-20 pt-16 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:pb-28 lg:pt-24">
         <div className="animate-fade-up">
@@ -114,7 +114,7 @@ export function Hero() {
 
         <div className="animate-fade-up lg:ml-auto lg:w-[520px]">
           <div className="relative">
-            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-primary/20 via-violet-500/10 to-cyan-500/20 blur-2xl" />
+            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-primary/20 via-emerald-500/10 to-teal-500/15 blur-2xl" />
             <div className="relative rounded-2xl border border-line bg-surface shadow-card">
               <div className="flex items-center justify-between border-b border-line px-5 py-4">
                 <div>

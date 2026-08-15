@@ -37,21 +37,24 @@ export function LiveInsights() {
   }, [])
 
   return (
-    <section id="insights" className="relative overflow-hidden py-20 lg:py-24">
-      <div className="absolute inset-0 bg-[#0b1030]" />
-      <div className="absolute -left-40 top-0 h-96 w-96 rounded-full bg-primary/25 blur-[130px]" />
-      <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-violet-600/20 blur-[130px]" />
+    <section
+      id="insights"
+      className="relative overflow-hidden border-y border-line bg-primary-soft/40 py-20 lg:py-24"
+    >
+      <div className="absolute inset-0 bg-grid opacity-40" />
+      <div className="absolute -left-40 top-0 h-96 w-96 rounded-full bg-primary/10 blur-[130px]" />
+      <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-teal-300/25 blur-[130px]" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-300">
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
               Live model insights
             </span>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl">
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-ink md:text-4xl">
               Real numbers from a real ensemble — fetched live
             </h2>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-slate-300">
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-soft">
               These stats come straight from the live FastAPI backend on Render.
               Five scikit-learn models are retrained in memory on every deploy —
               no cloud AI bills, no data ever leaving the app.
@@ -65,17 +68,17 @@ export function LiveInsights() {
             </div>
           </div>
 
-          <Card className="border-white/10 bg-white/5 p-6 backdrop-blur">
+          <Card className="p-6">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-400/15 text-amber-300">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
                 <Trophy className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm text-slate-400">Current best model</p>
+                <p className="text-sm text-ink-muted">Current best model</p>
                 {data ? (
-                  <p className="text-lg font-bold text-white">{data.best}</p>
+                  <p className="text-lg font-bold text-ink">{data.best}</p>
                 ) : (
-                  <Skeleton className="mt-1 h-5 w-40 bg-white/10" />
+                  <Skeleton className="mt-1 h-5 w-40" />
                 )}
               </div>
             </div>
@@ -92,21 +95,21 @@ export function LiveInsights() {
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-3"
+                  className="rounded-xl border border-line bg-surface px-4 py-3"
                 >
-                  <p className="text-xs text-slate-400">{stat.label}</p>
+                  <p className="text-xs text-ink-muted">{stat.label}</p>
                   {stat.value ? (
-                    <p className="tabular mt-1 text-xl font-bold text-white">
+                    <p className="tabular mt-1 text-xl font-bold text-ink">
                       {stat.value}
                     </p>
                   ) : (
-                    <Skeleton className="mt-2 h-5 w-16 bg-white/10" />
+                    <Skeleton className="mt-2 h-5 w-16" />
                   )}
                 </div>
               ))}
             </div>
 
-            <div className="mt-6 flex items-center gap-2 rounded-xl bg-emerald-400/10 px-4 py-3 text-sm text-emerald-300">
+            <div className="mt-6 flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700 ring-1 ring-inset ring-emerald-200">
               <Activity className="h-4 w-4" />
               <span>Backend online · predictions generated on request</span>
             </div>
@@ -260,7 +263,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-white/60 py-20 lg:py-24">
+    <section id="how-it-works" className="bg-primary-soft/30 py-20 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <span className="section-kicker">How it works</span>
@@ -348,20 +351,20 @@ export function CtaBanner() {
   return (
     <section className="px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24">
       <div className="mx-auto max-w-7xl">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary-hover to-violet-700 px-6 py-14 text-center shadow-pop sm:px-12">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary-hover to-emerald-700 px-6 py-14 text-center shadow-pop sm:px-12">
           <div className="absolute inset-0 bg-grid opacity-30" />
           <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
           <div className="relative">
             <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
               Ready to see what the data says?
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-base text-indigo-100">
+            <p className="mx-auto mt-4 max-w-xl text-base text-emerald-50">
               Sign in with a demo account and run a full analysis in under a
               minute — free forever.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link href="/login">
-                <Button size="lg" className="bg-white text-primary hover:bg-indigo-50 shadow-none">
+                <Button size="lg" className="bg-white text-primary shadow-none hover:bg-emerald-50">
                   Get started free
                 </Button>
               </Link>
