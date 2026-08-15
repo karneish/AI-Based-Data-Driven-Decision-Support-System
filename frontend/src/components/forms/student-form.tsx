@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Play,
   RotateCcw,
+  ShieldCheck,
   Sparkles,
   UserRound,
 } from "lucide-react";
@@ -332,6 +333,11 @@ export function StudentForm({
           <RotateCcw className="h-4 w-4" />
         </Button>
       </div>
+
+      <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-ink-muted">
+        <ShieldCheck className="h-3 w-3 text-emerald-400" />
+        Runs on-device in memory — no student data is stored
+      </p>
     </form>
   )
 }

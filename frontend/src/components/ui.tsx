@@ -352,8 +352,17 @@ export function StatCard({
     cyan: "bg-cyan-500/15 text-cyan-300",
     teal: "bg-teal-500/15 text-teal-300",
   }
+  const accents: Record<string, string> = {
+    primary: "bg-gradient-to-r from-emerald-500 to-teal-400",
+    green: "bg-gradient-to-r from-emerald-400 to-emerald-500/40",
+    amber: "bg-gradient-to-r from-amber-400 to-amber-400/40",
+    red: "bg-gradient-to-r from-rose-400 to-rose-400/40",
+    cyan: "bg-gradient-to-r from-cyan-400 to-cyan-400/40",
+    teal: "bg-gradient-to-r from-teal-400 to-teal-400/40",
+  }
   return (
-    <Card className="p-4">
+    <Card className="relative overflow-hidden p-4">
+      <span className={cn("absolute inset-x-0 top-0 h-0.5", accents[tone])} />
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wide text-ink-muted">
           {label}

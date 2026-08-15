@@ -124,14 +124,33 @@ export function ReportView({ result }: { result: AnalysisResult }) {
   return (
     <div className="animate-fade-up space-y-5" id="report">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <h2 className="text-lg font-bold tracking-tight text-ink">
-            {result.predicted_class}
-          </h2>
-          <Badge tone={result.risk_color === "green" ? "green" : result.risk_color === "amber" ? "amber" : "red"}>
-            {result.risk_category}
-          </Badge>
-          <Badge tone="primary">{result.selected_model}</Badge>
+        <div className="flex items-center gap-3">
+          <div
+            className={cn(
+              "flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ring-1",
+              tone.badge
+            )}
+          >
+            {result.risk_color === "green" ? (
+              <CheckCircle2 className="h-6 w-6" />
+            ) : (
+              <AlertTriangle className="h-6 w-6" />
+            )}
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg font-bold tracking-tight text-ink">
+                {result.predicted_class}
+              </h2>
+              <Badge tone={result.risk_color === "green" ? "green" : result.risk_color === "amber" ? "amber" : "red"}>
+                {result.risk_category}
+              </Badge>
+              <Badge tone="primary">{result.selected_model}</Badge>
+            </div>
+            <p className="mt-0.5 text-xs text-ink-muted">
+              Ensemble verdict · generated in memory · no data stored
+            </p>
+          </div>
         </div>
         <Button
           variant="secondary"
@@ -149,8 +168,14 @@ export function ReportView({ result }: { result: AnalysisResult }) {
         ))}
       </div>
 
-      <Card className={cn("border-t-4", riskBorder)}>
-        <div className="flex flex-col gap-4 p-5 md:flex-row md:items-center">
+      <Card className={cn("relative overflow-hidden border-t-4", riskBorder)}>
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-0 bg-gradient-to-br",
+            tone.gradient
+          )}
+        />
+        <div className="relative flex flex-col gap-4 p-5 md:flex-row md:items-center">
           <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl", tone.badge)}>
             {result.risk_color === "green" ? (
               <CheckCircle2 className="h-5 w-5" />
@@ -203,7 +228,17 @@ export function ReportView({ result }: { result: AnalysisResult }) {
               </Badge>
             }
           />
-          <div className="flex justify-center py-4">
+          <div className="relative flex justify-center overflow-hidden py-4">
+            <div
+              className={cn(
+                "pointer-events-none absolute top-1/2 h-44 w-44 -translate-y-1/2 rounded-full blur-3xl",
+                result.risk_color === "green"
+                  ? "bg-emerald-500/15"
+                  : result.risk_color === "amber"
+                    ? "bg-amber-500/15"
+                    : "bg-rose-500/15"
+              )}
+            />
             <Gauge
               value={result.asi}
               color={result.risk_color === "green" ? "#34d399" : result.risk_color === "amber" ? "#fbbf24" : "#f87171"}
