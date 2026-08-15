@@ -147,8 +147,7 @@ dss-mip/
 ├── docs/                          # Architecture, API & development docs
 ├── scripts/                       # start-dev.bat / start-dev.sh
 ├── .github/workflows/ci.yml       # CI pipeline
-├── Dockerfile.backend             # Backend container image
-├── Dockerfile.frontend            # Frontend container image
+├── Dockerfile.backend             # Single container: builds frontend + serves API & SPA
 ├── docker-compose.yml             # Local container orchestration
 ├── .env.example                   # Environment template
 ├── LICENSE                        # MIT license
@@ -253,12 +252,12 @@ The frontend will be available at: **http://localhost:5173**
 
 ### Academic Stability Index (ASI)
 
-The ASI is a weighted composite metric that combines the ML prediction probability with behavioural indicators:
+The ASI is a weighted composite metric that combines the ML prediction probability with behavioural indicators. The weights are **data-calibrated at startup** from logistic-regression coefficients on the training set (current dataset):
 
 ```
-ASI = (ML Probability × 0.50)
-    + (Attendance Score × 0.30)
-    + (Study Hours Score × 0.20)
+ASI = (ML Probability × 0.96)
+    + (Attendance Score × 0.01)
+    + (Study Hours Score × 0.03)
 ```
 
 ### Risk Thresholds
@@ -307,19 +306,23 @@ ASI = (ML Probability × 0.50)
 
 ## Production Build
 
+The FastAPI backend serves both the API (`/api/*`) and the built React application (`/`), so a single Python service hosts the entire app. The containerised `Dockerfile.backend` builds the frontend automatically during image build.
+
+To run it locally as a single service:
+
 ```bash
-cd frontend
-npm run build
+docker compose up -d
+# App + API docs: http://localhost:8000
 ```
 
-The production-ready static files will be in `frontend/dist/`, which can be served by any static hosting provider (NGINX, Netlify, Vercel, etc.).
-
-To run the backend in production:
+Or run the backend directly (serves the SPA only if `backend/app/static/` exists):
 
 ```bash
 cd backend
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
+
+> Use a **single worker** — the models are trained in memory at startup and shared within the process.
 
 For containerised deployment, see [`docs/development.md`](docs/development.md) and the included `docker-compose.yml`.
 

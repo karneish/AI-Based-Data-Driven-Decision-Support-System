@@ -72,19 +72,23 @@ npm run build
 
 ## Production build
 
-```bash
-cd frontend
-npm run build      # outputs to frontend/dist
-```
-
-## Docker
+The FastAPI backend serves both the API (`/api/*`) and the built React SPA (`/`). In Docker, the multi-stage `Dockerfile.backend` builds the frontend automatically:
 
 ```bash
 docker compose up --build
 ```
 
-- Frontend: http://localhost:5173 (nginx serving the built SPA, proxying `/api`)
-- Backend: http://localhost:8000
+- App + API docs: http://localhost:8000
+
+To build the frontend manually (e.g. to test static serving without Docker):
+
+```bash
+cd frontend
+npm run build          # outputs to frontend/dist
+# copy frontend/dist/* into backend/app/static/
+cd ../backend
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
 
 ## CI
 

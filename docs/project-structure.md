@@ -12,7 +12,7 @@ dss-mip/
 ├── backend/                           # Python FastAPI service
 │   ├── app/                           # Application package
 │   │   ├── main.py                    # FastAPI entry point (uvicorn app.main:app)
-│   │   ├── config.py                  # Centralised settings, constants & thresholds
+│   │   ├── config.py                  # Centralised settings & defaults
 │   │   ├── api/                       # HTTP layer
 │   │   │   ├── __init__.py            # Aggregates all routers into `api_router`
 │   │   │   └── routes/                # Route handlers grouped by resource
@@ -24,9 +24,9 @@ dss-mip/
 │   │   │   ├── auth.py                # LoginRequest, LoginResponse
 │   │   │   └── analysis.py            # StudentInput
 │   │   ├── core/                      # Pure domain logic (framework-independent)
-│   │   │   ├── asi.py                 # ASI composite-score formula
-│   │   │   ├── risk.py                # Risk classification thresholds
-│   │   │   ├── recommendations.py     # Intervention recommendation engine
+│   │   │   ├── asi.py                 # ASI composite-score formula (AI-calibrated weights)
+│   │   │   ├── risk.py                # Risk classification (data-calibrated bands)
+│   │   │   ├── recommendations.py     # Counterfactual impact-ranked recommendation engine
 │   │   │   ├── visuals.py             # Radar/bar chart payload builders
 │   │   │   └── users.py               # Demo user registry + authentication
 │   │   ├── services/                  # Business-service orchestration
@@ -34,8 +34,9 @@ dss-mip/
 │   │   │   └── analysis.py            # Full ML analysis pipeline
 │   │   ├── models/                    # Machine-learning layer
 │   │   │   └── trainer.py             # Dataset loading, model training, comparison & registry
-│   │   └── data/                      # Datasets
-│   │       └── student_data.csv       # Training dataset (1,000+ student records)
+│   │   ├── data/                      # Datasets
+│   │   │   └── student_data.csv       # Training dataset (1,000+ student records)
+│   │   └── static/                    # Built SPA (populated at Docker build time, git-ignored)
 │   ├── tests/                         # Pytest suite
 │   │   └── test_api.py                # API contract tests (TestClient)
 │   ├── requirements.txt               # Runtime dependencies
@@ -97,7 +98,6 @@ dss-mip/
 │   ├── tsconfig.node.json             # TypeScript config for Vite/Node tooling
 │   ├── tailwind.config.js             # Tailwind CSS configuration
 │   ├── postcss.config.js              # PostCSS configuration
-│   ├── nginx.conf                     # Production nginx server config (Docker)
 │   └── .env.example                   # Frontend environment template
 │
 ├── docs/                              # Project documentation
@@ -110,8 +110,7 @@ dss-mip/
 │   ├── start-dev.bat                  # Windows dev startup (backend + frontend)
 │   └── start-dev.sh                   # Unix/macOS dev startup
 │
-├── Dockerfile.backend                 # Backend container image
-├── Dockerfile.frontend                # Frontend container image (multi-stage + nginx)
+├── Dockerfile.backend                 # Single container: builds frontend, serves API + SPA
 ├── docker-compose.yml                 # Local container orchestration
 ├── .dockerignore                      # Docker build exclusions
 ├── .env.example                       # Root environment template

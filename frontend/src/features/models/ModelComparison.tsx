@@ -96,7 +96,7 @@ export default function ModelComparisonPage() {
         <div className="section-tag mb-3">ML Evaluation</div>
         <h2 className="font-display font-bold text-2xl text-white">Model Comparison & Evaluation</h2>
         <p className="text-slate-400 text-sm mt-1">
-          All four models trained on 800 student records and evaluated on 200 test samples.
+          All five models trained on 800 student records and evaluated on 200 test samples.
         </p>
       </div>
 

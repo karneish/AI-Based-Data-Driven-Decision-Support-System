@@ -45,11 +45,18 @@ def test_analyze():
     assert "asi" in body
     assert "risk_category" in body
     assert "recommendations" in body
+    assert "ensemble_probability" in body
+    assert "confidence" in body
+    assert "class_threshold" in body
+    assert "risk_thresholds" in body
+    assert "asi_weights" in body
+    for rec in body["recommendations"]:
+        assert "probability_gain" in rec
 
 
 def test_model_comparison():
     resp = client.get("/api/model-comparison")
     assert resp.status_code == 200
     body = resp.json()
-    assert len(body["models"]) == 4
+    assert len(body["models"]) == 5
     assert body["best_model"] in {m["model"] for m in body["models"]}

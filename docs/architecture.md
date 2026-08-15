@@ -40,17 +40,17 @@ The backend is organised as a small hexagonal-style Python package:
 1. **HTTP layer** — `app/api/routes` maps HTTP verbs to handlers, delegates to services.
 2. **Service layer** — `app/services/analysis.py` composes the full analysis pipeline.
 3. **Domain layer** — `app/core` holds pure rules: ASI formula, risk thresholds, recommendation engine, chart-payload builders, user registry.
-4. **ML layer** — `app/models/trainer.py` loads the CSV, trains four classifiers, evaluates them, and keeps an in-memory registry used at request time.
-5. **Configuration** — `app/config.py` centralises every tunable (feature lists, ASI weights, risk thresholds, dataset stats).
+4. **ML layer** — `app/models/trainer.py` loads the CSV, trains five classifiers (Logistic Regression, Decision Tree, Random Forest, K-Nearest Neighbors, Gradient Boosting), calibrates the class threshold (Youden's J) and ASI weights, and keeps an in-memory registry used at request time.
+5. **Configuration** — `app/config.py` centralises every tunable (feature lists, dataset stats); thresholds and weights are learned from data at startup.
 
 ### Data flow
 
 ```
 User Input → Pydantic validation → Scaler transform
-  → ML probability (selected model)
-  → ASI composite (ML 0.50 · Attendance 0.30 · Study Hours 0.20)
-  → Risk classification (Stable / Monitor / Intervention)
-  → Recommendation engine
+  → ML probability (selected model) + ensemble probability (all 5 models)
+  → ASI composite (data-calibrated weights: ML ~0.96 · Attendance · Study Hours)
+  → Risk classification (data-calibrated bands: Stable / Monitor / Intervention)
+  → Counterfactual recommendation engine (ranked by predicted probability gain)
   → JSON payload → Recharts visualisation
 ```
 
@@ -73,5 +73,15 @@ Feature-first organisation: every user-facing capability (`auth`, `analysis`, `s
 | Mode | Description |
 |---|---|
 | **Development** | Vite dev server on `:5173` proxies `/api` to Uvicorn on `:8000` |
-| **Docker Compose** | `Dockerfile.frontend` builds the SPA and serves it via nginx; nginx proxies `/api` to the `backend` container |
-| **Static hosting** | `frontend/dist` can be served by NGINX/Netlify/Vercel; the API is deployed separately |
+| **Single service (Docker)** | `Dockerfile.backend` multi-stage build compiles the SPA and copies it into `backend/app/static`; FastAPI serves `/api/*` and the SPA (with client-route fallback to `index.html`) from one Python process |
+
+The app is fully containerised in one service — no nginx, no Vercel, no separate static host required.
+
+## AI engine (Tier 1)
+
+| Component | Implementation |
+|---|---|
+| **Model zoo** | Logistic Regression, Decision Tree, Random Forest, K-Nearest Neighbors, Gradient Boosting (`HistGradientBoostingClassifier`) |
+| **Ensemble** | Soft-vote mean of all model probabilities; `confidence` = % of models agreeing on the class |
+| **Calibrated thresholds** | Class cutoff derived via Youden's J (ROC) on held-out data; risk bands and ASI weights learned from the training data at startup |
+| **Counterfactual recommendations** | Each actionable feature is simulated against the trained ensemble; predicted probability gain ranks the top 4 recommendations per student |

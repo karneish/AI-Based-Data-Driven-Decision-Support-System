@@ -1,4 +1,4 @@
-from app.config import settings
+from app.models import trainer
 
 
 def normalize(value: float, scale: float) -> float:
@@ -6,7 +6,7 @@ def normalize(value: float, scale: float) -> float:
 
 
 def compute_asi(ml_probability: float, attendance: float, study_hours: float) -> float:
-    weights = settings.ASI_WEIGHTS
+    weights = trainer.get_asi_weights()
     att_norm = normalize(attendance, 100.0)
     study_norm = normalize(study_hours, 20.0)
     asi = (

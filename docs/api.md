@@ -52,18 +52,44 @@ Authenticates against the in-memory demo user registry.
 ```json
 {
   "ml_probability": 61.2,
+  "ensemble_probability": 58.4,
+  "confidence": 80.0,
+  "class_threshold": 56.7,
   "asi": 57.8,
   "risk_category": "Monitor Closely",
   "risk_color": "amber",
+  "risk_thresholds": { "stable": 52.8, "monitor": 36.8 },
+  "asi_weights": { "ml_probability": 0.962, "attendance": 0.008, "study_hours": 0.03 },
   "feature_importance": [ { "feature": "Attendance", "importance": 0.31 } ],
   "radar_data": { "GPA Score": 65.0, "Attendance": 72.0 },
   "bar_data": [ { "label": "GPA", "score": 65.0, "benchmark": 70 } ],
-  "recommendations": [ { "action": "Improve Attendance", "impact": "High", "detail": "Current: 72%. Target: 85%+" } ],
+  "recommendations": [
+    {
+      "action": "Improve Attendance",
+      "impact": "High",
+      "detail": "Current: 72%. Target: 85%+",
+      "probability_gain": 24.5
+    }
+  ],
   "predicted_class": "Strong Performer",
   "selected_model": "Logistic Regression",
-  "all_model_probs": [ { "model": "Logistic Regression", "probability": 61.2 } ]
+  "all_model_probs": [
+    { "model": "Logistic Regression", "probability": 61.2 },
+    { "model": "Decision Tree", "probability": 55.0 },
+    { "model": "Random Forest", "probability": 58.1 },
+    { "model": "K-Nearest Neighbors", "probability": 60.3 },
+    { "model": "Gradient Boosting", "probability": 57.4 }
+  ]
 }
 ```
+
+Field notes:
+
+- `ml_probability` — probability from the selected model; `ensemble_probability` — soft-vote mean across all five models.
+- `confidence` — % of models that agree with the predicted class (max of vote share vs. its complement).
+- `class_threshold` — calibrated cutoff (Youden's J) used to turn the ensemble probability into `predicted_class`.
+- `risk_thresholds` / `asi_weights` — values learned from the training data at startup.
+- `recommendations[].probability_gain` — predicted probability (pts) gained by the counterfactual improvement, used to rank the top 4.
 
 ---
 
@@ -112,5 +138,5 @@ Accepts the same `StudentInput` body as `/api/analyze` and returns the identical
 ## `GET /health`
 
 ```json
-{ "status": "ok", "models_loaded": ["Logistic Regression", "Decision Tree", "Random Forest", "K-Nearest Neighbors"] }
+{ "status": "ok", "models_loaded": ["Logistic Regression", "Decision Tree", "Random Forest", "K-Nearest Neighbors", "Gradient Boosting"] }
 ```

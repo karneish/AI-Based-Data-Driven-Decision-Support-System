@@ -6,6 +6,8 @@ services:
     container_name: dss-mip-backend
     ports:
       - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      - PORT=8000
     healthcheck:
       test:
         - CMD
@@ -16,14 +18,3 @@ services:
       timeout: 5s
       retries: 5
       start_period: 15s
-
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
-    container_name: dss-mip-frontend
-    ports:
-      - "${FRONTEND_PORT:-5173}:80"
-    depends_on:
-      backend:
-        condition: service_healthy

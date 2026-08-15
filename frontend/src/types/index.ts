@@ -25,6 +25,7 @@ export interface Recommendation {
   action: string
   impact: 'High' | 'Medium' | 'Low'
   detail: string
+  probability_gain: number
 }
 
 export interface BarDataItem {
@@ -40,9 +41,14 @@ export interface ModelProb {
 
 export interface AnalysisResult {
   ml_probability: number
+  ensemble_probability: number
+  confidence: number
+  class_threshold: number
   asi: number
   risk_category: 'Stable' | 'Monitor Closely' | 'Intervention Required'
   risk_color: 'green' | 'amber' | 'red'
+  risk_thresholds: { stable: number; monitor: number }
+  asi_weights: { ml_probability: number; attendance: number; study_hours: number }
   feature_importance: FeatureImportance[]
   radar_data: Record<string, number>
   bar_data: BarDataItem[]

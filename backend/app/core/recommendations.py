@@ -1,70 +1,120 @@
+import numpy as np
+
+from app.config import settings
+from app.models import trainer
 from app.schemas.analysis import StudentInput
 
-RECOMMENDATION_RULES = [
+ACTIONABLE_FEATURES = [
     {
         "field": "attendance",
-        "threshold": 75,
         "action": "Improve Attendance",
-        "impact": "High",
-        "detail": lambda v: f"Current: {v:.0f}%. Target: 85%+",
+        "delta": 10,
+        "max": 100,
+        "unit": "%",
+        "label": "Attendance",
     },
     {
         "field": "study_hours",
-        "threshold": 10,
         "action": "Increase Study Hours",
-        "impact": "High",
-        "detail": lambda v: f"Current: {v:.1f} hrs/week. Target: 12+ hrs",
+        "delta": 2,
+        "max": 20,
+        "unit": " hrs/wk",
+        "label": "Study Hours",
     },
     {
         "field": "assignment_rate",
-        "threshold": 75,
         "action": "Improve Assignment Submission",
-        "impact": "Medium",
-        "detail": lambda v: f"Current: {v:.0f}%. Target: 90%+",
+        "delta": 10,
+        "max": 100,
+        "unit": "%",
+        "label": "Assignment Rate",
     },
     {
         "field": "previous_gpa",
-        "threshold": 6.0,
-        "action": "Focus on GPA Improvement",
-        "impact": "High",
-        "detail": lambda v: f"Previous GPA: {v:.1f}. Target: 7.0+",
+        "action": "Raise Previous GPA",
+        "delta": 0.5,
+        "max": 10,
+        "unit": "",
+        "label": "Previous GPA",
     },
     {
         "field": "internal_score",
-        "threshold": 60,
         "action": "Strengthen Internal Scores",
-        "impact": "Medium",
-        "detail": lambda v: f"Current: {v:.0f}. Target: 70+",
+        "delta": 10,
+        "max": 100,
+        "unit": "",
+        "label": "Internal Score",
+    },
+    {
+        "field": "extracurricular",
+        "action": "Join Extracurricular Activities",
+        "delta": 1,
+        "max": 1,
+        "unit": "",
+        "label": "Extracurricular",
     },
 ]
 
 
+def _raw_vector(data: StudentInput) -> np.ndarray:
+    return np.array(
+        [
+            [
+                data.previous_gpa,
+                data.internal_score,
+                data.study_hours,
+                data.attendance,
+                data.assignment_rate,
+                float(data.parental_education),
+                float(data.internet_access),
+                float(data.extracurricular),
+            ]
+        ]
+    )
+
+
 def build_recommendations(data: StudentInput) -> list[dict]:
-    recs = []
-    for rule in RECOMMENDATION_RULES:
+    scaler = trainer.get_scaler()
+    raw = _raw_vector(data)
+    base_prob = float(trainer.predict_ensemble(scaler.transform(raw))[0]) * 100
+
+    results = []
+    for rule in ACTIONABLE_FEATURES:
         value = getattr(data, rule["field"])
-        if value < rule["threshold"]:
-            recs.append(
-                {
-                    "action": rule["action"],
-                    "impact": rule["impact"],
-                    "detail": rule["detail"](value),
-                }
-            )
-    if not data.extracurricular:
-        recs.append(
+        new_value = min(float(value) + rule["delta"], rule["max"])
+        if new_value <= value:
+            continue
+        modified = raw.copy()
+        modified[0][settings.FEATURES.index(rule["field"])] = new_value
+        prob = float(trainer.predict_ensemble(scaler.transform(modified))[0]) * 100
+        gain = prob - base_prob
+        if gain < 1.0:
+            continue
+        impact = "High" if gain >= 15.0 else ("Medium" if gain >= 7.0 else "Low")
+        target_txt = f"{new_value:.1f}{rule['unit']}".rstrip(".") if rule["unit"] else f"{new_value:.1f}"
+        current_txt = f"{value:.1f}{rule['unit']}".rstrip(".") if rule["unit"] else f"{value:.1f}"
+        results.append(
             {
-                "action": "Join Extracurricular Activities",
-                "impact": "Low",
-                "detail": "Improves engagement and holistic development",
+                "action": rule["action"],
+                "impact": impact,
+                "detail": (
+                    f"Raising {rule['label']} from {current_txt} to {target_txt} is predicted "
+                    f"to increase success probability by {gain:.1f} pts."
+                ),
+                "probability_gain": round(gain, 1),
             }
         )
-    if not recs:
-        recs.append(
+
+    results.sort(key=lambda r: r["probability_gain"], reverse=True)
+
+    if not results:
+        return [
             {
                 "action": "Maintain Current Performance",
                 "impact": "Low",
                 "detail": "Excellent! Keep up the consistent effort.",
+                "probability_gain": 0.0,
             }
-        )
-    return recs
+        ]
+
+    return results[:4]

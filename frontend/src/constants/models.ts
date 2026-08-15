@@ -5,6 +5,7 @@ export const MODEL_COLORS: Record<string, string> = {
   'Decision Tree':       '#a855f7',
   'Random Forest':       '#10b981',
   'K-Nearest Neighbors': '#f59e0b',
+  'Gradient Boosting':   '#f472b6',
 }
 
 export const RISK_CONFIG = {

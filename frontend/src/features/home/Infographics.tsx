@@ -94,16 +94,16 @@ export default function Infographics({ onGoAnalyze, result }: Props) {
           <div className="bg-surface rounded-xl p-4 font-mono text-sm space-y-2">
             <p className="text-accent-cyan">ASI =</p>
             <p className="pl-4 text-slate-300">
-              <span className="text-brand-400">ML Probability</span> × 0.50
+              <span className="text-brand-400">ML Probability</span> × 0.96
             </p>
             <p className="pl-4 text-slate-300">
-              + <span className="text-accent-green">Attendance</span> × 0.30
+              + <span className="text-accent-green">Attendance</span> × 0.01
             </p>
             <p className="pl-4 text-slate-300">
-              + <span className="text-accent-amber">Study Hours</span> × 0.20
+              + <span className="text-accent-amber">Study Hours</span> × 0.03
             </p>
             <div className="border-t border-surface-border mt-3 pt-3 text-xs text-slate-500">
-              Range: 0.00 → 1.00 (higher = more stable)
+              Weights calibrated on the training data at startup
             </div>
           </div>
         </div>
@@ -112,9 +112,9 @@ export default function Infographics({ onGoAnalyze, result }: Props) {
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Risk Thresholds</p>
           <div className="space-y-3">
             {[
-              { label: 'Stable', range: 'ASI ≥ 0.70', color: 'accent-green', bar: 100 },
-              { label: 'Monitor Closely', range: '0.45 ≤ ASI < 0.70', color: 'accent-amber', bar: 60 },
-              { label: 'Intervention Required', range: 'ASI < 0.45', color: 'accent-red', bar: 30 },
+              { label: 'Stable', range: 'ASI ≥ 0.53', color: 'accent-green', bar: 100 },
+              { label: 'Monitor Closely', range: '0.37 ≤ ASI < 0.53', color: 'accent-amber', bar: 60 },
+              { label: 'Intervention Required', range: 'ASI < 0.37', color: 'accent-red', bar: 30 },
             ].map(({ label, range, color, bar }) => (
               <div key={label}>
                 <div className="flex items-center justify-between mb-1">

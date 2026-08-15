@@ -44,10 +44,16 @@ function handlePrint(result: AnalysisResult) {
       <div class="subtitle">AI-Based Data-Driven Decision Support System · Generated on ${new Date().toLocaleString()}</div>
 
       <div class="grid">
-        <div class="card"><div class="val">${result.ml_probability}%</div><div class="lbl">ML Probability</div></div>
+        <div class="card"><div class="val">${result.ensemble_probability}%</div><div class="lbl">Ensemble Probability</div></div>
+        <div class="card"><div class="val">${result.ml_probability}%</div><div class="lbl">ML Probability (${result.selected_model})</div></div>
+        <div class="card"><div class="val">${result.confidence}%</div><div class="lbl">Model Confidence</div></div>
         <div class="card"><div class="val">${result.asi}%</div><div class="lbl">ASI Score</div></div>
+      </div>
+      <div class="grid">
         <div class="card"><div class="val">${result.risk_category}</div><div class="lbl">Risk Level</div></div>
         <div class="card"><div class="val">${result.predicted_class}</div><div class="lbl">Classification</div></div>
+        <div class="card"><div class="val">${result.class_threshold}%</div><div class="lbl">AI Class Threshold</div></div>
+        <div class="card"><div class="val">${result.all_model_probs.length}</div><div class="lbl">Models in Ensemble</div></div>
       </div>
 
       <div class="risk ${result.risk_color}">
@@ -96,6 +102,7 @@ function handlePrint(result: AnalysisResult) {
           <div class="rec">
             <strong>#${i + 1} ${r.action}</strong>
             <span class="impact impact-${r.impact}">${r.impact} Impact</span>
+            ${r.probability_gain > 0 ? `<span class="impact" style="background:#e0f2fe;color:#0369a1;margin-left:8px">+${r.probability_gain} pts predicted</span>` : ''}
             <div style="color:#666; font-size:12px; margin-top:6px">${r.detail}</div>
           </div>
         `).join('')}
@@ -167,10 +174,12 @@ export default function ResultPanel({ result }: Props) {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'ML Probability',   value: `${result.ml_probability}%`, sub: result.selected_model,      color: 'text-brand-400' },
-          { label: 'ASI Score',        value: `${result.asi}%`,            sub: 'Academic Stability Index', color: 'text-accent-cyan' },
-          { label: 'Predicted Class',  value: result.predicted_class,      sub: 'ML classification',        color: 'text-accent-purple' },
-          { label: 'Recommendations',  value: `${result.recommendations.length}`, sub: 'Action items',     color: 'text-accent-amber' },
+          { label: 'Ensemble Probability', value: `${result.ensemble_probability}%`, sub: '5-model soft vote',  color: 'text-brand-400' },
+          { label: 'ML Probability',       value: `${result.ml_probability}%`,       sub: result.selected_model, color: 'text-accent-purple' },
+          { label: 'ASI Score',            value: `${result.asi}%`,                  sub: 'AI-calibrated',       color: 'text-accent-cyan' },
+          { label: 'Model Confidence',     value: `${result.confidence}%`,           sub: 'Cross-model agreement', color: 'text-accent-green' },
+          { label: 'Predicted Class',      value: result.predicted_class,            sub: `Threshold ${result.class_threshold}%`, color: 'text-accent-amber' },
+          { label: 'Recommendations',      value: `${result.recommendations.length}`, sub: 'Impact-ranked',      color: 'text-accent-amber' },
         ].map(k => (
           <div key={k.label} className="stat-card hover:border-brand-500/30 transition-all">
             <div className="text-xs text-slate-500 uppercase tracking-widest">{k.label}</div>
@@ -199,12 +208,12 @@ export default function ResultPanel({ result }: Props) {
 
       {/* ASI Gauge */}
       <div className="glass-card p-6">
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Academic Stability Index (ASI) Gauge</p>
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Academic Stability Index (ASI) Gauge — AI-calibrated bands</p>
         <div className="relative h-6 bg-surface rounded-full overflow-hidden">
           <div className="absolute inset-0 flex">
-            <div className="flex-none w-[45%] bg-accent-red/20" />
-            <div className="flex-none w-[25%] bg-accent-amber/20" />
-            <div className="flex-none w-[30%] bg-accent-green/20" />
+            <div className="flex-none bg-accent-red/20" style={{ width: `${result.risk_thresholds.monitor * 100}%` }} />
+            <div className="flex-none bg-accent-amber/20" style={{ width: `${(result.risk_thresholds.stable - result.risk_thresholds.monitor) * 100}%` }} />
+            <div className="flex-none bg-accent-green/20" style={{ width: `${(1 - result.risk_thresholds.stable) * 100}%` }} />
           </div>
           <div className="absolute top-0 left-0 h-full rounded-full transition-all duration-1000"
             style={{
@@ -214,7 +223,7 @@ export default function ResultPanel({ result }: Props) {
           />
         </div>
         <div className="flex justify-between text-xs font-mono text-slate-500 mt-2">
-          <span>0% — Intervention</span><span>45% — Monitor</span><span>70% — Stable — 100%</span>
+          <span>0% — Intervention</span><span>{(result.risk_thresholds.monitor * 100).toFixed(0)}% — Monitor</span><span>{(result.risk_thresholds.stable * 100).toFixed(0)}% — Stable — 100%</span>
         </div>
       </div>
 
@@ -280,6 +289,11 @@ export default function ResultPanel({ result }: Props) {
                 <div className="flex items-center gap-2 flex-wrap mb-1">
                   <span className="font-semibold text-white text-sm">{rec.action}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-full border ${IMPACT_CONFIG[rec.impact].cls}`}>{rec.impact} Impact</span>
+                  {rec.probability_gain > 0 && (
+                    <span className="text-xs px-2 py-0.5 rounded-full border bg-brand-600/15 text-brand-300 border-brand-500/30 font-mono">
+                      +{rec.probability_gain} pts predicted
+                    </span>
+                  )}
                 </div>
                 <p className="text-xs text-slate-400">{rec.detail}</p>
               </div>
@@ -307,11 +321,12 @@ export default function ResultPanel({ result }: Props) {
           </p>
           <p>
             <strong className="text-white">Academic Stability Index:</strong> The computed ASI score is{' '}
-            <strong className="text-accent-cyan">{result.asi}%</strong> — derived from ML probability (50% weight),
-            attendance (30%), and study hours (20%). This places the student in the{' '}
+            <strong className="text-accent-cyan">{result.asi}%</strong> — derived from an AI-calibrated blend of
+            ensemble ML probability, attendance, and study hours. This places the student in the{' '}
             <strong className={result.risk_color === 'green' ? 'text-accent-green' : result.risk_color === 'amber' ? 'text-accent-amber' : 'text-accent-red'}>
               {result.risk_category}
-            </strong> category.
+            </strong> category, using calibrated risk bands
+            (Stable ≥ {(result.risk_thresholds.stable * 100).toFixed(0)}%, Monitor ≥ {(result.risk_thresholds.monitor * 100).toFixed(0)}%).
           </p>
           <p>
             <strong className="text-white">Key Influencing Factors:</strong>{' '}
@@ -320,9 +335,14 @@ export default function ResultPanel({ result }: Props) {
           </p>
           <p>
             <strong className="text-white">Cross-Model Agreement:</strong>{' '}
-            {result.all_model_probs.filter(m => m.probability >= 50).length} out of 4 models predict this
-            student as a Strong Performer, showing{' '}
-            {result.all_model_probs.filter(m => m.probability >= 50).length >= 3 ? 'strong' : 'mixed'} consensus.
+            {result.all_model_probs.filter(m => m.probability >= result.class_threshold).length} out of {result.all_model_probs.length} models predict this
+            student as a Strong Performer ({result.confidence}% agreement), showing{' '}
+            {result.confidence >= 75 ? 'strong' : result.confidence >= 50 ? 'moderate' : 'weak'} consensus.
+          </p>
+          <p>
+            <strong className="text-white">Recommendations:</strong> The recommendations below were generated by
+            AI counterfactual simulation — each action was simulated against the trained ensemble to measure its
+            predicted impact on this student's success probability, then ranked by expected gain.
           </p>
           <p>
             <strong className="text-white">Conclusion:</strong>{' '}
