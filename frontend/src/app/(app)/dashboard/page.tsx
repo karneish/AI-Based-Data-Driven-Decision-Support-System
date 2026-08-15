@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowUpRight,
-  ClipboardList,
   Cpu,
   Crosshair,
   Database,
@@ -31,12 +30,6 @@ import { cn, formatNumber } from "@/lib/utils";
 import type { ModelComparisonData } from "@/types";
 
 const ACTIONS = [
-  {
-    href: "/analyze",
-    title: "Analyze a student",
-    body: "Full ensemble report, risk classification and recommendations.",
-    icon: ClipboardList,
-  },
   {
     href: "/simulate",
     title: "Outcome simulator",

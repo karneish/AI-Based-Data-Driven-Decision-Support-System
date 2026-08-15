@@ -1,17 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Play,
-  RotateCcw,
-  ShieldCheck,
-  Sparkles,
-  UserRound,
-} from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { RotateCcw, ShieldCheck, Sparkles } from "lucide-react";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import type { AnalysisResult, StudentInput } from "@/types";
-import { Button, Field, RangeField, SelectField, Switch } from "@/components/ui";
+import { Button, RangeField, SelectField, Switch } from "@/components/ui";
 
 export interface Preset {
   name: string
@@ -87,13 +81,11 @@ const EDU_OPTIONS = [
 ]
 
 export function StudentForm({
-  mode,
   onResult,
   onLoading,
   initial,
   className,
 }: {
-  mode: "analyze" | "simulate"
   onResult: (r: AnalysisResult) => void
   onLoading?: (loading: boolean) => void
   initial?: Partial<StudentInput>
@@ -118,55 +110,38 @@ export function StudentForm({
   )
 
   const buildInput = useCallback(
-    (name: string): StudentInput => ({
-      ...input,
-      name: name || input.name || "Student",
-    }),
+    (): StudentInput => ({ ...input, name: "Simulation" }),
     [input]
   )
 
-  const run = useCallback(
-    async (name: string) => {
-      if (!name.trim()) {
-        setError("Please enter the student's name.")
-        return
-      }
-      setError(null)
-      setLoadingSafe(true)
-      try {
-        const result =
-          mode === "simulate"
-            ? await api.simulate(buildInput(name))
-            : await api.analyze(buildInput(name))
-        onResult(result)
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "The analysis could not be completed. Please try again."
-        )
-      } finally {
-        setLoadingSafe(false)
-      }
-    },
-    [mode, buildInput, onResult, setLoadingSafe]
-  )
+  const run = useCallback(async () => {
+    setError(null)
+    setLoadingSafe(true)
+    try {
+      const result = await api.simulate(buildInput())
+      onResult(result)
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "The simulation could not be completed. Please try again."
+      )
+    } finally {
+      setLoadingSafe(false)
+    }
+  }, [buildInput, onResult, setLoadingSafe])
 
   useEffect(() => {
-    if (mode !== "simulate") return
-    if (firstRender.current) {
-      firstRender.current = false
-      return
-    }
+    const delay = firstRender.current ? 300 : 450
+    firstRender.current = false
     const timer = setTimeout(() => {
-      void run("Simulation")
-    }, 450)
+      void run()
+    }, delay)
     return () => clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, run])
+  }, [run])
 
   const applyPreset = (preset: Preset) => {
-    setInput((prev) => ({ ...defaultInput(), ...preset.values, name: prev.name }))
+    setInput({ ...defaultInput(), ...preset.values })
     setError(null)
   }
 
@@ -175,54 +150,41 @@ export function StudentForm({
     setError(null)
   }
 
-  const values = useMemo(() => PRESETS, [])
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    void run(mode === "simulate" ? "Simulation" : input.name)
-  }
+  const activePresetName = PRESETS.find((p) =>
+    (Object.keys(p.values) as (keyof StudentInput)[]).every(
+      (key) => input[key] === p.values[key]
+    )
+  )?.name
 
   return (
     <form
-      onSubmit={handleSubmit}
-      className={cn("space-y-5", className)}
+      onSubmit={(e) => e.preventDefault()}
+      className={cn("space-y-6", className)}
       noValidate
     >
-      <div>
-        <span className="mb-2 block text-sm font-medium text-ink">Quick presets</span>
-        <div className="grid grid-cols-3 gap-2">
-          {values.map((preset) => (
-            <button
-              key={preset.name}
-              type="button"
-              onClick={() => applyPreset(preset)}
-              className="rounded-xl border border-line bg-white/[0.04] px-2 py-2 text-left transition hover:border-emerald-500/40 hover:bg-white/[0.06]"
-            >
-              <span className="flex items-center gap-1 text-xs font-semibold text-ink">
-                <Sparkles className="h-3 w-3 text-primary" />
-                {preset.name}
-              </span>
-              <span className="mt-0.5 block text-[10px] leading-tight text-ink-muted">
-                {preset.description}
-              </span>
-            </button>
-          ))}
-        </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-ink-muted">
+          Presets
+        </span>
+        {PRESETS.map((preset) => (
+          <button
+            key={preset.name}
+            type="button"
+            onClick={() => applyPreset(preset)}
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition",
+              activePresetName === preset.name
+                ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-300"
+                : "border-line bg-white/[0.03] text-ink-soft hover:border-emerald-500/40 hover:bg-white/[0.06]"
+            )}
+          >
+            <Sparkles className="h-3 w-3" />
+            {preset.name}
+          </button>
+        ))}
       </div>
 
-      {mode === "analyze" ? (
-        <Field
-          label="Student name"
-          id="student-name"
-          placeholder="e.g. Arjun Sharma"
-          icon={<UserRound className="h-4 w-4" />}
-          value={input.name}
-          onChange={(e) => set("name", e.target.value)}
-          autoComplete="off"
-        />
-      ) : null}
-
-      <div className="space-y-4">
+      <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <RangeField
           label="Previous GPA"
           hint="out of 10"
@@ -245,8 +207,8 @@ export function StudentForm({
           tone="emerald"
         />
         <RangeField
-          label="Weekly study hours"
-          hint="hours"
+          label="Study hours"
+          hint="weekly"
           value={input.study_hours}
           min={0}
           max={20}
@@ -266,7 +228,7 @@ export function StudentForm({
           onChange={(v) => set("attendance", v)}
         />
         <RangeField
-          label="Assignment submission"
+          label="Assignment rate"
           hint="%"
           value={input.assignment_rate}
           min={0}
@@ -277,14 +239,13 @@ export function StudentForm({
         />
       </div>
 
-      <SelectField
-        label="Parental education level"
-        options={EDU_OPTIONS}
-        value={input.parental_education}
-        onChange={(e) => set("parental_education", Number(e.target.value))}
-      />
-
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+      <div className="grid items-end gap-4 rounded-2xl border border-line bg-white/[0.02] p-4 sm:grid-cols-2 xl:grid-cols-[1fr_auto_auto]">
+        <SelectField
+          label="Parental education level"
+          options={EDU_OPTIONS}
+          value={input.parental_education}
+          onChange={(e) => set("parental_education", Number(e.target.value))}
+        />
         <Switch
           label="Internet access"
           description="Reliable home connectivity"
@@ -305,39 +266,46 @@ export function StudentForm({
         </div>
       ) : null}
 
-      <div className="flex items-center gap-2 pt-1">
-        <Button
-          type="submit"
-          size="lg"
-          loading={loading}
-          className="flex-1"
-          disabled={mode === "simulate"}
-        >
-          {mode === "analyze" ? (
-            <>
-              <Play className="h-4 w-4" /> Run analysis
-            </>
-          ) : (
-            <>
-              <Play className="h-4 w-4" /> Auto-simulating…
-            </>
-          )}
-        </Button>
-        <Button
-          type="button"
-          variant="secondary"
-          size="lg"
-          onClick={reset}
-          aria-label="Reset form"
-        >
-          <RotateCcw className="h-4 w-4" />
-        </Button>
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+        <p className="flex items-center gap-1.5 text-[11px] text-ink-muted">
+          <ShieldCheck className="h-3 w-3 text-emerald-400" />
+          Runs on-device in memory — no student data is stored
+        </p>
+        <div className="flex items-center gap-2">
+          <span
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-inset transition",
+              loading
+                ? "bg-emerald-500/10 text-emerald-300 ring-emerald-500/25"
+                : "bg-white/5 text-ink-soft ring-white/10"
+            )}
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span
+                className={cn(
+                  "absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75",
+                  !loading && "hidden"
+                )}
+              />
+              <span
+                className={cn(
+                  "relative inline-flex h-1.5 w-1.5 rounded-full",
+                  loading ? "bg-emerald-400" : "bg-ink-muted"
+                )}
+              />
+            </span>
+            {loading ? "Recomputing…" : "Live"}
+          </span>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={reset}
+          >
+            <RotateCcw className="h-3.5 w-3.5" /> Reset
+          </Button>
+        </div>
       </div>
-
-      <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-ink-muted">
-        <ShieldCheck className="h-3 w-3 text-emerald-400" />
-        Runs on-device in memory — no student data is stored
-      </p>
     </form>
   )
 }
