@@ -5,34 +5,19 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   BarChart3,
+  ClipboardList,
   LayoutDashboard,
   LogOut,
   Menu,
+  PlusCircle,
   ShieldCheck,
   SlidersHorizontal,
+  Users,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/components/auth/auth-provider";
 import { Logo } from "@/components/layout/logo";
-
-const NAV_ITEMS = [
-  {
-    href: "/dashboard",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    href: "/simulate",
-    label: "Simulator",
-    icon: SlidersHorizontal,
-  },
-  {
-    href: "/models",
-    label: "Model Insights",
-    icon: BarChart3,
-  },
-]
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth()
@@ -51,6 +36,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (!user) return null
 
+  const isStaff = user.role === "faculty" || user.role === "admin" || user.role === "advisor"
+  const isAdmin = user.role === "admin"
+  const isAdvisor = user.role === "advisor"
+
+  const navItems = [
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/simulate", label: "Simulator", icon: SlidersHorizontal },
+    { href: "/models", label: "Model Insights", icon: BarChart3 },
+    ...(isStaff
+      ? [{ href: "/students", label: "Students", icon: Users }]
+      : []),
+    ...(isStaff
+      ? [{ href: "/reports", label: "Reports", icon: ClipboardList }]
+      : []),
+    ...(isAdvisor || isAdmin
+      ? [{ href: "/interventions", label: "Interventions", icon: PlusCircle }]
+      : []),
+    ...(isAdmin ? [{ href: "/users", label: "Users", icon: ShieldCheck }] : []),
+  ]
+
   const initials = user.name
     .split(" ")
     .map((p) => p[0])
@@ -59,7 +64,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     .toUpperCase()
 
   const navLinks = (onNavigate?: () => void) =>
-    NAV_ITEMS.map((item) => {
+    navItems.map((item) => {
       const active =
         pathname === item.href || pathname.startsWith(`${item.href}/`)
       const Icon = item.icon

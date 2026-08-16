@@ -4,9 +4,11 @@ from fastapi.responses import RedirectResponse
 
 from app.api import api_router
 from app.config import settings
+from app.db.seed import init_db
 from app.models import trainer
 
 trainer.init()
+init_db()
 
 app = FastAPI(
     title=settings.APP_NAME,

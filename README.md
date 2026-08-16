@@ -11,7 +11,8 @@ A full-stack, production-grade Decision Support System that evaluates student ac
 
 - **Frontend:** Next.js + React + TypeScript with a bespoke corporate design system (Tailwind CSS), fully responsive on mobile, tablet and desktop.
 - **Backend:** Python FastAPI REST API — CORS-enabled, documented, versioned.
-- **AI layer:** Five scikit-learn classifiers trained **in memory** at startup on `student_data.csv`. **100% free** — no API keys, no cloud AI, no database.
+- **Database:** SQLAlchemy over PostgreSQL (Neon) — users, students, reports and interventions are persisted and shared across all roles.
+- **AI layer:** Five scikit-learn classifiers trained **in memory** at startup on `student_data.csv`. **100% free** — no API keys, no cloud AI.
 
 Built as an academic mini-project, this system demonstrates the integration of **five ML classifiers**, **composite scoring (ASI)**, **counterfactual recommendations**, **model transparency**, and a **what-if simulator** into a cohesive analytics platform.
 
@@ -35,8 +36,13 @@ Built as an academic mini-project, this system demonstrates the integration of *
 
 ## Key Features
 
-- **Corporate-grade landing page** — hero with live model preview, feature grid, how-it-works, live model insights, and tech stack sections
-- **Authentication** — JSON login against the API; the SPA persists the session locally (no cookies, no database)
+- **Corporate-grade landing page** — hero with live model preview, feature grid, how-it-works, live model insights, demo cards and tech stack sections
+- **Authentication & sign-up** — PBKDF2-hashed accounts persisted in Postgres; normal users sign up and sign in with a bearer token; exactly **four seeded demo accounts** open one-click role dashboards
+- **Role-based dashboards** — dedicated views for **student, faculty, admin and advisor**, each reading live data from the database
+- **Student roster** — staff create, edit and delete student profiles; the owning student account sees its own linked profile
+- **Persisted reports** — every per-student analysis is saved as a report with input snapshot; students see only their own, staff see everything
+- **Intervention planner** — advisors schedule per-student support with priority and notes, tracked through an open → in-progress → done workflow
+- **User management** — admins review every account and role on the platform
 - **Student Input Form** — Slider-based form for all 8 academic indicators with quick presets (Balanced / High Achiever / At Risk)
 - **ML-Powered Analysis** — 5-model ensemble (soft vote) via FastAPI for real-time predictions
 - **Academic Stability Index (ASI)** — Data-calibrated weighted composite of ML probability, attendance, and study habits
@@ -58,6 +64,7 @@ Built as an academic mini-project, this system demonstrates the integration of *
 | **Charts** | Custom SVG + Recharts | Gauge, radar, bars — no CDN dependency |
 | **Icons** | lucide-react | Crisp, consistent iconography |
 | **Backend** | Python 3 + FastAPI | Versioned JSON REST API |
+| **Database** | SQLAlchemy + PostgreSQL (Neon) | Persisted users, students, reports, interventions |
 | **ML Model** | scikit-learn | 5 classifiers + soft-vote ensemble |
 | **Data Processing** | Pandas + NumPy | Dataset handling and feature engineering |
 | **HTTP Client** | native `fetch` | Browser-to-API communication |
@@ -70,15 +77,22 @@ Built as an academic mini-project, this system demonstrates the integration of *
 ┌──────────────────────────────────────────────────────────────────────┐
 │                     CLIENT (Browser)  →  Vercel                       │
 │   Landing · Login · Dashboard · Simulator · Model Insights            │
+│   Students · Reports · Interventions · Users                           │
 │   Next.js + React + TypeScript (responsive, SSR)                      │
 └──────────────────────────────────┬───────────────────────────────────┘
-                                   │ HTTP JSON (CORS-enabled)
+                                   │ HTTP JSON (CORS-enabled, bearer auth)
                                    ▼
 ┌──────────────────────────────────────────────────────────────────────┐
 │            BACKEND (FastAPI + Uvicorn on Render)                      │
-│   JSON API  (/api/analyze, /api/simulate, /api/model-comparison…)     │
+│   JSON API  (/api/analyze, /api/auth, /api/students, …)               │
 │   ML engine (5 models trained at startup on student_data.csv)         │
-│   No database · No cloud AI · No API keys                             │
+│   SQLAlchemy ORM — persistence layer                                  │
+└──────────────────────────────────┬───────────────────────────────────┘
+                                   │
+                                   ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│         DATABASE  (PostgreSQL on Neon)                                │
+│   users · students · reports · interventions                          │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -104,15 +118,17 @@ dss-mip/
 │   └── package.json
 ├── backend/
 │   ├── app/
-│   │   ├── main.py               # FastAPI entry (CORS + routers + / redirect)
+│   │   ├── main.py               # FastAPI entry (CORS + routers + init_db)
 │   │   ├── config.py             # Centralised settings & thresholds
-│   │   ├── api/routes/           # HTTP JSON API (auth, analysis, models, health)
+│   │   ├── db/                   # SQLAlchemy engine, models & seed data
+│   │   ├── api/routes/           # HTTP JSON API (auth, students, reports, …)
 │   │   ├── schemas/              # Pydantic DTOs
-│   │   ├── core/                 # Domain logic (ASI, risk, recommendations)
+│   │   ├── core/                 # Security (hashing/tokens) + domain logic
 │   │   ├── services/             # Business orchestration
 │   │   ├── models/               # ML training & model registry
 │   │   └── data/                 # Datasets (student_data.csv)
 │   ├── tests/                    # Pytest API tests
+│   ├── .env.example              # DATABASE_URL template
 │   ├── requirements.txt          # Runtime dependencies
 │   └── requirements-dev.txt      # Test dependencies
 ├── docs/                         # Architecture, API & development docs
@@ -153,11 +169,18 @@ source venv/bin/activate    # Linux/Mac
 # Install dependencies
 pip install -r requirements.txt
 
+# Configure the database connection
+cp .env.example .env        # Windows: copy .env.example .env
+# Edit backend/.env and set DATABASE_URL to your PostgreSQL (Neon) URL.
+# A local SQLite file is used automatically when DATABASE_URL is unset.
+
 # Start the API (trains models at startup)
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 Interactive API documentation: **http://localhost:8000/docs**
+
+The database is seeded on first boot with four demo accounts and six student profiles. Sign-ups create new accounts in the same database.
 
 ### Setup (frontend)
 
@@ -183,10 +206,18 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 |---|---|---|---|
 | `GET` | `/health` | Server health check + loaded models | — |
 | `POST` | `/api/login` | User authentication (JSON) | — |
+| `POST` | `/api/signup` | Create a new account (student role) | — |
+| `GET` | `/api/users` | List all user accounts | admin |
 | `POST` | `/api/analyze` | Run full ML analysis on a student profile | — |
 | `POST` | `/api/simulate` | What-if simulation (same engine as analyze) | — |
 | `GET` | `/api/model-comparison` | Evaluation metrics for all trained models | — |
 | `GET` | `/api/feature-importance` | Random Forest feature importances | — |
+| `GET/POST` | `/api/students` | List / create student profiles | staff |
+| `GET/PUT/DELETE` | `/api/students/{id}` | Read / update / delete a profile | staff |
+| `POST` | `/api/students/{id}/analyze` | Run analysis and persist a report | staff + owner |
+| `GET` | `/api/reports` | List reports (own for students) | user |
+| `GET/POST` | `/api/interventions` | List / create interventions | staff |
+| `PATCH/DELETE` | `/api/interventions/{id}` | Update / delete an intervention | advisor+ / admin |
 
 ### Example: `/api/analyze`
 
@@ -259,12 +290,16 @@ ASI = (ML Probability × 0.50)
 
 ## Demo Credentials
 
+Each demo card on the landing page and login screen signs in instantly with one click. These four accounts are seeded into the database on first boot.
+
 | Username | Password | Display Name | Role |
 |---|---|---|---|
-| `karneish` | `pass123` | Karneish | Student |
-| `admin` | `admin123` | Dr. Admin | Advisor |
-| `student1` | `pass123` | Arjun Sharma | Student |
-| `student2` | `pass123` | Priya Menon | Student |
+| `student` | `student123` | Arjun Sharma | Student |
+| `faculty` | `faculty123` | Prof. Meera Iyer | Faculty |
+| `admin` | `admin123` | Dr. Admin | Admin |
+| `advisor` | `advisor123` | Sara Nair | Advisor |
+
+Normal users can also **create their own account** from the login screen (Create account tab) — new users get the `student` role and their own personal dashboard.
 
 ---
 

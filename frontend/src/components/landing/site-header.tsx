@@ -10,8 +10,9 @@ import { Logo } from "@/components/layout/logo";
 const LINKS = [
   { href: "#features", label: "Features" },
   { href: "#how-it-works", label: "How it works" },
-  { href: "#stack", label: "Technology" },
+  { href: "#demo", label: "Demo dashboards" },
   { href: "#insights", label: "Model insights" },
+  { href: "#stack", label: "Technology" },
 ]
 
 export function SiteHeader() {

@@ -1,7 +1,12 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent
+ENV_FILE = BASE_DIR / ".env"
+if ENV_FILE.exists():
+    load_dotenv(ENV_FILE)
 
 
 class Settings:
@@ -52,6 +57,12 @@ class Settings:
     RISK_MONITOR_THRESHOLD: float = 0.45
 
     DEFAULT_MODEL: str = "Logistic Regression"
+
+    # Neon Postgres in production; SQLite fallback for local development.
+    # Set DATABASE_URL=postgresql://... in your environment for Neon.
+    DATABASE_URL: str = os.getenv(
+        "DATABASE_URL", f"sqlite:///{BASE_DIR.parent / 'dss.db'}"
+    )
 
     FRONTEND_URL: str = os.getenv(
         "FRONTEND_URL", "https://ai-dss-three.vercel.app"

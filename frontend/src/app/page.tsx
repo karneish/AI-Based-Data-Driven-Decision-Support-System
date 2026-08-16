@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/landing/site-header";
 import { Hero } from "@/components/landing/hero";
 import {
   CtaBanner,
+  DemoSection,
   FeaturesSection,
   HowItWorks,
   LiveInsights,
@@ -17,6 +18,7 @@ export default function LandingPage() {
         <Hero />
         <FeaturesSection />
         <HowItWorks />
+        <DemoSection />
         <LiveInsights />
         <TechStack />
         <CtaBanner />

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -7,16 +8,19 @@ import {
   Crosshair,
   Database,
   LayoutDashboard,
+  LifeBuoy,
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   Target,
   TrendingUp,
   Trophy,
+  Users,
   Zap,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import {
+  Badge,
   Card,
   CardHeader,
   EmptyState,
@@ -28,8 +32,9 @@ import {
   ModelLeaderboardList,
 } from "@/components/dashboards/model-leaderboard-list";
 import { useModelComparison } from "@/components/dashboards/use-model-comparison";
-import { formatNumber } from "@/lib/utils";
-import type { User } from "@/types";
+import { api } from "@/lib/api";
+import { cn, formatNumber } from "@/lib/utils";
+import type { Intervention, ReportRecord, Student, User, UserRecord } from "@/types";
 
 const ACTIONS = [
   {
@@ -44,14 +49,59 @@ const ACTIONS = [
     body: "Accuracy, precision, F1 and confusion matrices for all five.",
     icon: Trophy,
   },
+  {
+    href: "/students",
+    title: "Student roster",
+    body: "Manage profiles, run analyses and review history.",
+    icon: Users,
+  },
+  {
+    href: "/users",
+    title: "User accounts",
+    body: "Review every account on the platform.",
+    icon: ShieldCheck,
+  },
 ]
 
 export function AdminDashboard({ user }: { user: User }) {
   const { data, error } = useModelComparison()
+  const [users, setUsers] = useState<UserRecord[]>([])
+  const [students, setStudents] = useState<Student[]>([])
+  const [reports, setReports] = useState<ReportRecord[]>([])
+  const [interventions, setInterventions] = useState<Intervention[]>([])
+  const [loadError, setLoadError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let mounted = true
+    Promise.all([
+      api.listUsers(),
+      api.listStudents(),
+      api.listReports(),
+      api.listInterventions(),
+    ])
+      .then(([u, s, r, i]) => {
+        if (!mounted) return
+        setUsers(u)
+        setStudents(s)
+        setReports(r)
+        setInterventions(i)
+      })
+      .catch((err) => {
+        if (mounted)
+          setLoadError(err instanceof Error ? err.message : "Could not load system data")
+      })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
   const best = data?.models.find((m) => m.model === data.best_model) ?? null
   const avgAccuracy = data
     ? data.models.reduce((sum, m) => sum + m.accuracy, 0) / data.models.length
     : 0
+  const openInterventions = interventions.filter(
+    (i) => i.status === "open" || i.status === "in_progress"
+  ).length
 
   return (
     <div className="relative">
@@ -61,7 +111,7 @@ export function AdminDashboard({ user }: { user: User }) {
       <PageHeader
         kicker="Admin console"
         title={`Welcome, ${user.name}`}
-        subtitle="Live system control — ensemble health, model performance and infrastructure at a glance."
+        subtitle="Live system control — ensemble health, model performance and platform data at a glance."
         icon={<LayoutDashboard className="h-5 w-5" />}
       >
         <span className="hidden items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 ring-1 ring-inset ring-emerald-500/25 sm:inline-flex">
@@ -108,11 +158,35 @@ export function AdminDashboard({ user }: { user: User }) {
               tone="cyan"
             />
             <StatCard
-              label="Best precision"
-              value={best ? `${best.precision.toFixed(1)}%` : "0.0%"}
-              sub="leader model"
-              icon={<Crosshair className="h-4 w-4" />}
+              label="Users"
+              value={users.length}
+              sub="accounts on platform"
+              icon={<Users className="h-4 w-4" />}
               tone="teal"
+            />
+            <StatCard
+              label="Students"
+              value={students.length}
+              sub="profiles in roster"
+              icon={<Database className="h-4 w-4" />}
+              tone="amber"
+            />
+          </div>
+
+          <div className="mt-5 grid grid-cols-2 gap-3 xl:grid-cols-4">
+            <StatCard
+              label="Reports generated"
+              value={reports.length}
+              sub="analyses saved to the DB"
+              icon={<TrendingUp className="h-4 w-4" />}
+              tone="green"
+            />
+            <StatCard
+              label="Open interventions"
+              value={openInterventions}
+              sub={`${interventions.length} total planned`}
+              icon={<LifeBuoy className="h-4 w-4" />}
+              tone="red"
             />
             <StatCard
               label="Dataset"
@@ -120,6 +194,13 @@ export function AdminDashboard({ user }: { user: User }) {
               sub="synthetic students in memory"
               icon={<Database className="h-4 w-4" />}
               tone="amber"
+            />
+            <StatCard
+              label="Best precision"
+              value={best ? `${best.precision.toFixed(1)}%` : "0.0%"}
+              sub="leader model"
+              icon={<Crosshair className="h-4 w-4" />}
+              tone="teal"
             />
           </div>
 
@@ -138,6 +219,65 @@ export function AdminDashboard({ user }: { user: User }) {
                     bestModel={data.best_model}
                   />
                 </div>
+              </Card>
+
+              <Card className="mt-5">
+                <CardHeader
+                  title="Recent reports"
+                  subtitle="Latest saved analyses across the platform"
+                  icon={<TrendingUp className="h-4 w-4" />}
+                  action={
+                    <Link href="/reports" className="flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-emerald-300">
+                      View all <ArrowUpRight className="h-3.5 w-3.5" />
+                    </Link>
+                  }
+                />
+                {loadError ? (
+                  <p className="p-5 text-sm text-rose-300">{loadError}</p>
+                ) : reports.length === 0 ? (
+                  <p className="p-5 text-sm text-ink-soft">
+                    No reports saved yet — run an analysis to get started.
+                  </p>
+                ) : (
+                  <div className="divide-y divide-line">
+                    {reports.slice(0, 5).map((report) => {
+                      const r = report.result
+                      return (
+                        <div key={report.id} className="flex items-center gap-3 p-4">
+                          <span
+                            className={cn(
+                              "h-2 w-2 shrink-0 rounded-full",
+                              r.risk_color === "green"
+                                ? "bg-emerald-400"
+                                : r.risk_color === "amber"
+                                  ? "bg-amber-400"
+                                  : "bg-rose-400"
+                            )}
+                          />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-semibold text-ink">
+                              {report.student_name ?? `Student #${report.student_id}`}
+                            </p>
+                            <p className="mt-0.5 text-xs text-ink-soft">
+                              ASI {r.asi.toFixed(1)} · {new Date(report.created_at).toLocaleString()}
+                            </p>
+                          </div>
+                          <Badge
+                            tone={
+                              r.risk_color === "green"
+                                ? "green"
+                                : r.risk_color === "amber"
+                                  ? "amber"
+                                  : "red"
+                            }
+                          >
+                            {r.risk_category}
+                          </Badge>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
               </Card>
             </div>
 
@@ -177,43 +317,8 @@ export function AdminDashboard({ user }: { user: User }) {
 
               <Card>
                 <CardHeader
-                  title="Dataset detail"
-                  subtitle="Synthetic training corpus"
-                  icon={<Database className="h-4 w-4" />}
-                />
-                <div className="space-y-2.5 p-5 text-sm">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-ink-soft">Total samples</span>
-                    <span className="tabular font-semibold text-ink">
-                      {formatNumber(data.dataset_info.total_samples, 0)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-ink-soft">Train / test split</span>
-                    <span className="tabular font-semibold text-ink">
-                      {formatNumber(data.dataset_info.train_samples, 0)} /{" "}
-                      {formatNumber(data.dataset_info.test_samples, 0)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-ink-soft">Features</span>
-                    <span className="tabular font-semibold text-ink">
-                      {data.dataset_info.features}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-ink-soft">Classes</span>
-                    <span className="text-right font-semibold text-ink">
-                      {data.dataset_info.classes.join(" · ")}
-                    </span>
-                  </div>
-                </div>
-              </Card>
-
-              <Card>
-                <CardHeader
                   title="System status"
-                  subtitle="Everything green, nothing stored"
+                  subtitle="Persistence layer connected"
                   icon={<ShieldCheck className="h-4 w-4" />}
                 />
                 <div className="space-y-2.5 p-5">
@@ -223,11 +328,11 @@ export function AdminDashboard({ user }: { user: User }) {
                   </div>
                   <div className="flex items-center gap-2.5 text-sm text-ink-soft">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    Privacy — zero student data stored
+                    {loadError ? "Database — check connection" : "Database — Neon connected"}
                   </div>
                   <div className="flex items-center gap-2.5 text-sm text-ink-soft">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    Engine — FastAPI · scikit-learn · in memory
+                    Engine — FastAPI · scikit-learn · SQLAlchemy
                   </div>
                 </div>
               </Card>

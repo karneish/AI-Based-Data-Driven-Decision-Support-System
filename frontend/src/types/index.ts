@@ -100,4 +100,59 @@ export interface User {
   name: string
   role: string
   username: string
+  token: string
+}
+
+export interface UserRecord {
+  id: number
+  username: string
+  name: string
+  role: string
+  created_at: string
+}
+
+export interface Student {
+  id: number
+  user_id: number | null
+  name: string
+  previous_gpa: number
+  internal_score: number
+  study_hours: number
+  attendance: number
+  assignment_rate: number
+  parental_education: number
+  internet_access: number
+  extracurricular: number
+  created_at: string
+  updated_at: string
+}
+
+export interface ReportRecord {
+  id: number
+  student_id: number
+  student_name: string
+  input_snapshot: Record<string, unknown>
+  result: AnalysisResult
+  created_by: string | null
+  created_at: string
+}
+
+export type InterventionStatus = "open" | "in_progress" | "done"
+
+export interface Intervention {
+  id: number
+  student_id: number
+  student_name: string
+  action: string
+  status: InterventionStatus
+  notes: string
+  priority: "High" | "Medium" | "Low"
+  created_by: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface AnalyzeStudentResponse {
+  report: ReportRecord
+  result: AnalysisResult
 }

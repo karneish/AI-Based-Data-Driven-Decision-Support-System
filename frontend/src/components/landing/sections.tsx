@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Activity, Trophy } from "lucide-react";
 import { api } from "@/lib/api";
 import { Badge, Button, Card, Skeleton } from "@/components/ui";
+import { DemoCards } from "@/components/auth/demo-cards";
 
 export function LiveInsights() {
   const [data, setData] = useState<{
@@ -294,6 +295,39 @@ export function HowItWorks() {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  )
+}
+
+export function DemoSection() {
+  return (
+    <section
+      id="demo"
+      className="relative overflow-hidden border-y border-line/60 py-20 lg:py-24"
+    >
+      <div className="absolute inset-0 bg-grid opacity-40" />
+      <div className="absolute -left-32 top-0 h-96 w-96 rounded-full bg-teal-500/10 blur-[130px]" />
+      <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-emerald-500/10 blur-[130px]" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <span className="section-kicker">Live demo dashboards</span>
+          <h2 className="section-title">Four roles, four dedicated dashboards</h2>
+          <p className="section-sub">
+            One click signs you in with a demo account and opens the dashboard
+            built for that role — student, faculty, admin or advisor.
+          </p>
+        </div>
+
+        <div className="mt-14">
+          <DemoCards />
+        </div>
+
+        <p className="mx-auto mt-6 max-w-xl text-center text-sm text-ink-soft">
+          No sign-up, no data stored. Every dashboard runs against the live
+          in-memory ML ensemble.
+        </p>
       </div>
     </section>
   )
