@@ -358,3 +358,13 @@ Distributed under the MIT License. See `LICENSE` for more information.
   <strong>AI-Based Data-Driven Decision Support System</strong> ·
   Built with ❤️ for Academic Excellence
 </div>
+
+---
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Author
+
+**Karneish P** - [GitHub](https://github.com/karneish)
